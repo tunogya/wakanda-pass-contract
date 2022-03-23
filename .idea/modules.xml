@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/carbon-trading-system.iml" filepath="$PROJECT_DIR$/.idea/carbon-trading-system.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/cap-and-trade.iml" filepath="$PROJECT_DIR$/.idea/cap-and-trade.iml" />
     </modules>
   </component>
 </project>
