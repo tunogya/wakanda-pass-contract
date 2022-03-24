@@ -35,8 +35,13 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  defaultNetwork: "rinkeby",
+  defaultNetwork: "hardhat",
   networks: {
+    hardhat: {
+      accounts: {
+        mnemonic: mnemonic,
+      },
+    },
     rinkeby: {
       url: process.env.RINKEBY_URL || "",
       accounts: {
