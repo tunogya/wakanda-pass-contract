@@ -3,23 +3,8 @@
   "version": "1.0.0",
   "description": "Wakanda Carbon Trading System",
   "scripts": {
-    "test": "HIDE_DEPLOY_LOG=true hardhat test",
-    "clean": "rm -rf cache/ artifacts/",
-    "docs": "solidity-docgen --solc-module solc-0.8 -i contracts -o docs -t templates",
-    "compile": "mkdir -p abis && hardhat --show-stack-traces --max-memory 8192 compile",
-    "coverage": "HIDE_DEPLOY_LOG=true OPTIMIZER_DISABLED=true hardhat coverage",
-    "coverage:file": "HIDE_DEPLOY_LOG=true OPTIMIZER_DISABLED=true hardhat coverage --testfiles",
-    "deploy": "hardhat deploy --write true --network",
-    "verify": "hardhat etherscan-verify --license MIT --solc-input --network",
-    "etherscan-verify": "hardhat etherscan:verify --network",
     "format": "prettier --config .prettierrc --write \"**/*.*.{ts,js}\" \"contracts/**/*.sol\"",
-    "format:file": "prettier --config .prettierrc --write",
-    "hint": "solhint \"contracts/**/*.sol\"",
-    "start-fork": "FORK_ENABLED=true hardhat node --no-reset --no-deploy",
-    "remove-logs": "yarn run hardhat remove-logs",
-    "gas": "REPORT_GAS=true HIDE_DEPLOY_LOG=true hardhat test",
-    "parallel-test": "mocha --require hardhat/register --recursive --parallel --exit --extension ts",
-    "prepack": "yarn compile"
+    "format:file": "prettier --config .prettierrc --write"
   },
   "repository": {
     "type": "git",
@@ -38,6 +23,7 @@
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
     "@nomiclabs/hardhat-etherscan": "^3.0.3",
+    "@nomiclabs/hardhat-ganache": "^2.0.1",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
     "@openzeppelin/contracts": "^4.5.0",
     "@openzeppelin/hardhat-upgrades": "^1.16.1",

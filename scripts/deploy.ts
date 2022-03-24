@@ -6,7 +6,6 @@ const dim = (text: string) => {
 };
 
 async function main() {
-  dim("Hello");
   const signers = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
   const CarbonCredit = await ethers.getContractFactory("CarbonCredit");

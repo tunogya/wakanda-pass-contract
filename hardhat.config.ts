@@ -35,14 +35,8 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  defaultNetwork: "ganache",
+  defaultNetwork: "rinkeby",
   networks: {
-    ganache: {
-      url: "http://127.0.0.1:7545",
-      accounts: {
-        mnemonic: mnemonic,
-      },
-    },
     rinkeby: {
       url: process.env.RINKEBY_URL || "",
       accounts: {
