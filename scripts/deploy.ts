@@ -5,6 +5,10 @@ const dim = (text: string) => {
   console.log(chalk.dim(text));
 };
 
+const green = (text: string) => {
+  console.log(chalk.green(text));
+};
+
 async function main() {
   const signers = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
@@ -17,7 +21,7 @@ async function main() {
 
   await credit.deployed();
 
-  dim(`Carbon Credit deployed to: ${credit.address}`);
+  green(`CarbonCredit deployed to: ${credit.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
