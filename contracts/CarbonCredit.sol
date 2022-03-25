@@ -43,7 +43,7 @@ contract CarbonCredit is ERC20, AccessControl, ERC20Permit {
      * @param _user Address of the receiver
      * @param _amount Amount of tokens to mint
      */
-    function minterRoleMint(
+    function mint(
         address _user,
         uint256 _amount
     ) external virtual onlyRole(MINTER_ROLE)
@@ -57,7 +57,7 @@ contract CarbonCredit is ERC20, AccessControl, ERC20Permit {
      * @param _user Address of the holder account to burn tokens from
      * @param _amount Amount of tokens to burn
      */
-    function burnerRoleBurn(
+    function burn(
         address _user,
         uint256 _amount
     ) external virtual onlyRole(BURNER_ROLE)
@@ -72,7 +72,7 @@ contract CarbonCredit is ERC20, AccessControl, ERC20Permit {
      * @param _user Address of the holder account to burn tokens from
      * @param _amount Amount of tokens to burn
      */
-    function burnRoleBurnFrom(
+    function burnFrom(
         address _operator,
         address _user,
         uint256 _amount
