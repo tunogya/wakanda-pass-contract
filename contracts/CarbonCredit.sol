@@ -1,7 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0
+
 pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 
@@ -10,7 +11,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
  * @author Wakanda Labs
  * @notice
  */
-contract CarbonCredit is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
+contract CarbonCredit is ERC20, AccessControl, ERC20Permit {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
@@ -64,11 +65,13 @@ contract CarbonCredit is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
         _burn(_user, _amount);
     }
 
-    /// @notice Allows an operator via the user who has Burner Role to burn tokens on behalf of a user account
-    /// @dev May be overridden to provide more granular control over operator-burning
-    /// @param _operator Address of the operator performing the burn action via the burner contract
-    /// @param _user Address of the holder account to burn tokens from
-    /// @param _amount Amount of tokens to burn
+    /**
+     * @notice Allows an operator via the user who has Burner Role to burn tokens on behalf of a user account
+     * @dev May be overridden to provide more granular control over operator-burning
+     * @param _operator Address of the operator performing the burn action via the burner contract
+     * @param _user Address of the holder account to burn tokens from
+     * @param _amount Amount of tokens to burn
+     */
     function burnRoleBurnFrom(
         address _operator,
         address _user,
