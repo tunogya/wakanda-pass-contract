@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.6;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -14,7 +14,7 @@ import "./interfaces/ICarbonCredit.sol";
  * @author Wakanda Labs
  * @notice
  */
-contract CarbonCredit is ERC20, AccessControl, ERC20Permit, ICarbonCredit {
+contract CarbonCredit is AccessControl, ERC20Permit, ICarbonCredit {
     using SafeERC20 for IERC20;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
