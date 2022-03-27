@@ -5,13 +5,18 @@ pragma solidity ^0.8.6;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+import "./interfaces/ICarbonCredit.sol";
 
 /**
  * @title CarbonCredit
  * @author Wakanda Labs
  * @notice
  */
-contract CarbonCredit is ERC20, AccessControl, ERC20Permit {
+contract CarbonCredit is ERC20, AccessControl, ERC20Permit, ICarbonCredit {
+    using SafeERC20 for IERC20;
+
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
@@ -46,7 +51,7 @@ contract CarbonCredit is ERC20, AccessControl, ERC20Permit {
     function mint(
         address _user,
         uint256 _amount
-    ) external virtual onlyRole(MINTER_ROLE)
+    ) external virtual override onlyRole(MINTER_ROLE)
     {
         _mint(_user, _amount);
     }
@@ -60,7 +65,7 @@ contract CarbonCredit is ERC20, AccessControl, ERC20Permit {
     function burn(
         address _user,
         uint256 _amount
-    ) external virtual onlyRole(BURNER_ROLE)
+    ) external virtual override onlyRole(BURNER_ROLE)
     {
         _burn(_user, _amount);
     }
@@ -76,7 +81,7 @@ contract CarbonCredit is ERC20, AccessControl, ERC20Permit {
         address _operator,
         address _user,
         uint256 _amount
-    ) external virtual onlyRole(BURNER_ROLE) {
+    ) external virtual override onlyRole(BURNER_ROLE) {
         if (_operator != _user) {
             _approve(_user, _operator, allowance(_user, _operator) - _amount);
         }
