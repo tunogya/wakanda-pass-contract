@@ -17,8 +17,12 @@ import "./interfaces/ICarbonCredit.sol";
 contract CarbonCredit is AccessControl, ERC20Permit, ICarbonCredit {
     using SafeERC20 for IERC20;
 
+    /* ============ ROLES ============ */
+
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
+
+    /* ============ Initialize ============ */
 
     /**
      * @notice Deploy CarbonCredit smart contract.
