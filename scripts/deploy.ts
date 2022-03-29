@@ -14,8 +14,8 @@ async function main() {
   dim(`signer: ${signers[0].address}`);
   const CarbonCredit = await ethers.getContractFactory("CarbonCredit");
   const credit = await CarbonCredit.deploy(
-    "Carbon Credit",
-    "tCO2e",
+    "Wakanda Carbon Credit",
+    "WCO2",
     signers[0].address
   );
 
