@@ -19,9 +19,21 @@ async function main() {
     signers[0].address
   );
 
-  await credit.deployed();
+  //
+  // await credit.deployed();
+  // green(`CarbonCredit deployed to: ${credit.address}`);
 
-  green(`CarbonCredit deployed to: ${credit.address}`);
+  credit.attach("0x3c3AC34670BA31d3B92C53A31130B0d48ef9eb91");
+  const CapAndTrade = await ethers.getContractFactory("CapAndTrade");
+  const capAndTrade = await CapAndTrade.deploy(
+    credit.address,
+    "10000000000000000000",
+    2022,
+    2060
+  );
+
+  await capAndTrade.deployed();
+  green(`CapAndTrade deployed to: ${capAndTrade.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
