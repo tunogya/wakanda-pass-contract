@@ -16,110 +16,84 @@ pragma solidity ^0.8.6;
 contract CapAndTrade is Ownable {
     /* ============ Global Variables ============ */
 
-    /// @notice cycle interval
-    uint256 internal immutable interval;
-
-    /// @notice cap of cycle allowances
-    uint256 internal cap;
-
-    /// @notice CycleCalculator address
-    /// ICycleCalculator internal cycleCalculator;
+    uint256 public immutable genesis;
+    uint256 public immutable start;
+    uint256 public immutable end;
 
     /// @notice CarbonCredit Token address
-    ICarbonCredit internal immutable token;
+    ICarbonCredit public immutable token;
 
-    /// @notice Maps user => cycle id => allowances balance
-    mapping(address => mapping(uint256 => uint256)) internal userCycleAllowances;
+    /// @notice Maps user => year => allowance
+    mapping(address => mapping(uint256 => uint256)) public allowances;
 
     /* ============ Initialize ============ */
 
     /**
      * @notice Deploy CapAndTrade contract
      * @param _token Address of the CarbonCredit.
-     * @param _interval cycle interval.
-     * @param _cap Cap of carbon allowance.
      */
     constructor(
         ICarbonCredit _token,
-        uint256 _interval,
-        uint256 _cap
+        uint256 _genesis,
+        uint256 _start,
+        uint256 _end
     ) {
-        require(_interval > 0, "CapAndTrade/interval-not-zero");
+        require(_start < _end, "CapAndTrade: end year should larger than start year");
 
-        interval = _interval;
-        cap = _cap;
         token = _token;
+        genesis = _genesis;
+        start = _start;
+        end = _end;
     }
 
     /* ============ External Functions ============ */
+
+    function yearOf(
+        uint256 timestamp
+    ) external virtual pure returns (uint256) {
+        return _yearOf(timestamp);
+    }
+
+
+    function capOf(
+        uint256 timestamp
+    ) external virtual view returns (uint256) {
+        return _capOf(timestamp);
+    }
+
 
     function claim() external virtual {
         _claim();
     }
 
-    function redeem(
-        uint256[] calldata ids
-    ) external virtual {
-        _redeem(ids);
-    }
-
-    function getUserAllowances(
-        uint256[] calldata _cycleIds,
-        address user
-    ) external virtual view returns (uint256[] memory) {
-        uint256 cycleIdsLength = _cycleIds.length;
-        uint256[] memory userAllowances = new uint256[](cycleIdsLength);
-
-        for (uint256 i = 0; i < cycleIdsLength; i++) {
-            userAllowances[i] = userCycleAllowances[user][i];
-        }
-
-        return userAllowances;
-    }
-
-    function getCycleInterval() external view returns (uint256) {
-        return interval;
-    }
-
-    function getCap() external view returns (uint256) {
-        return cap;
-    }
-
-    function setCap(
-        uint256 _cap
-    ) external virtual onlyOwner {
-        cap = _cap;
-    }
-
-    function getCurrentCycleId() external view returns (uint256) {
-        return _getCurrentCycleId();
-    }
-
     /* ============ Internal Functions ============ */
 
-    function _claim() internal {
-        uint256 index = _getCurrentCycleId();
-        require(userCycleAllowances[msg.sender][index] == 0, "");
-        userCycleAllowances[msg.sender][index] = cap;
+    function _yearOf(
+        uint256 timestamp
+    ) internal pure returns (uint256) {
+        return (timestamp / 365 days) + 1970;
     }
 
-    /// @notice for test
-    function _redeem(
-        uint256[] calldata _cycleIds
-    ) internal {
-        uint256 cycleIdsLength = _cycleIds.length;
-        uint256 totalMint;
-
-        for (uint256 i = 0; i < cycleIdsLength; i++) {
-            uint256 index = _cycleIds[i];
-            uint256 allowance = userCycleAllowances[msg.sender][index];
-            totalMint += allowance;
+    function _capOf(
+        uint256 timestamp
+    ) internal view returns (uint256) {
+        uint256 year = _yearOf(timestamp);
+        if (year >= end || year < start) {
+            return 0;
         }
 
-        token.mint(msg.sender, totalMint);
+        return genesis - (year - start) * genesis / (end - start);
     }
 
-    function _getCurrentCycleId() internal view returns (uint256) {
-        return block.timestamp / interval;
+    function _claim() internal {
+        uint256 currentYear = _yearOf(block.timestamp);
+        require(currentYear <= end, "CapAndTrade: end");
+
+        mapping(uint256 => uint256) storage user = allowances[msg.sender];
+        require(user[currentYear] == 0, "CapAndTrade: you had claimed this year");
+
+        uint256 cap = _capOf(block.timestamp);
+        user[currentYear] = cap;
+        token.mint(msg.sender, cap);
     }
 }
