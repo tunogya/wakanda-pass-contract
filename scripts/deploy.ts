@@ -18,12 +18,9 @@ async function main() {
     "WCO2",
     signers[0].address
   );
+  await credit.deployed();
+  green(`CarbonCredit deployed to: ${credit.address}`);
 
-  //
-  // await credit.deployed();
-  // green(`CarbonCredit deployed to: ${credit.address}`);
-
-  credit.attach("0x3c3AC34670BA31d3B92C53A31130B0d48ef9eb91");
   const CapAndTrade = await ethers.getContractFactory("CapAndTrade");
   const capAndTrade = await CapAndTrade.deploy(
     credit.address,

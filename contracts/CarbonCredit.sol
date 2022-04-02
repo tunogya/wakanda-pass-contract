@@ -40,7 +40,6 @@ contract CarbonCredit is AccessControl, ERC20Permit, ICarbonCredit {
         );
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
         _grantRole(MINTER_ROLE, _admin);
-        _grantRole(BURNER_ROLE, _admin);
     }
 
     /* ============ External Functions ============ */
