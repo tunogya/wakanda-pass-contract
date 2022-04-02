@@ -5,8 +5,8 @@ pragma solidity ^0.8.6;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-
 import "./interfaces/ICarbonCredit.sol";
 
 /**
@@ -20,7 +20,6 @@ contract CarbonCredit is AccessControl, ERC20Permit, ICarbonCredit {
     /* ============ ROLES ============ */
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     /* ============ Initialize ============ */
 
@@ -58,37 +57,5 @@ contract CarbonCredit is AccessControl, ERC20Permit, ICarbonCredit {
     ) external virtual override onlyRole(MINTER_ROLE)
     {
         _mint(_user, _amount);
-    }
-
-    /**
-     * @notice Allows the user who has Burner Role to burn tokens from a user account
-     * @dev May be overridden to provide more granular control over burning
-     * @param _user Address of the holder account to burn tokens from
-     * @param _amount Amount of tokens to burn
-     */
-    function burn(
-        address _user,
-        uint256 _amount
-    ) external virtual override onlyRole(BURNER_ROLE)
-    {
-        _burn(_user, _amount);
-    }
-
-    /**
-     * @notice Allows an operator via the user who has Burner Role to burn tokens on behalf of a user account
-     * @dev May be overridden to provide more granular control over operator-burning
-     * @param _operator Address of the operator performing the burn action via the burner contract
-     * @param _user Address of the holder account to burn tokens from
-     * @param _amount Amount of tokens to burn
-     */
-    function burnFrom(
-        address _operator,
-        address _user,
-        uint256 _amount
-    ) external virtual override onlyRole(BURNER_ROLE) {
-        if (_operator != _user) {
-            _approve(_user, _operator, allowance(_user, _operator) - _amount);
-        }
-        _burn(_user, _amount);
     }
 }
