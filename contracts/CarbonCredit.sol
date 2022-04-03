@@ -14,7 +14,7 @@ import "./interfaces/ICarbonCredit.sol";
  * @author Wakanda Labs
  * @notice
  */
-contract CarbonCredit is AccessControl, ERC20Permit, ICarbonCredit {
+contract CarbonCredit is AccessControl, ERC20Permit, ERC20Burnable, ICarbonCredit {
     using SafeERC20 for IERC20;
 
     /* ============ ROLES ============ */
