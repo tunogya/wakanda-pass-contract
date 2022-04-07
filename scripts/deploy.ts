@@ -37,6 +37,11 @@ async function main() {
   dim(
     `hh verify --network rinkeby ${capAndTrade.address} ${credit.address} 10000000000000000000 2022 2060`
   );
+
+  dim(`Grant role to CapAndTrade...`);
+  const MINTER_ROLE = await credit.MINTER_ROLE();
+  await credit.grantRole(MINTER_ROLE, capAndTrade.address);
+  dim(`Grant success!`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
