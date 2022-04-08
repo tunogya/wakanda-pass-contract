@@ -7,6 +7,7 @@ import "@openzeppelin/hardhat-upgrades";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
+import * as process from "process";
 
 dotenv.config();
 
@@ -54,8 +55,20 @@ const config: HardhatUserConfig = {
         mnemonic: mnemonic,
       },
     },
-    bsct: {
-      url: process.env.BSCT_URL || "",
+    bscTestnet: {
+      url: process.env.BSCTESTNET_URL || "",
+      accounts: {
+        mnemonic: mnemonic,
+      },
+    },
+    polygonMumbai: {
+      url: process.env.MUMBAI_URL || "",
+      accounts: {
+        mnemonic: mnemonic,
+      },
+    },
+    goerli: {
+      url: process.env.GOERLI_URL || "",
       accounts: {
         mnemonic: mnemonic,
       },
@@ -66,7 +79,16 @@ const config: HardhatUserConfig = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      rinkeby: process.env.ETHERSCAN_API_KEY,
+      goerli: process.env.ETHERSCAN_API_KEY,
+      arbitrumOne: process.env.ARBISCAN_API_KEY,
+      arbitrumTestnet: process.env.ARBISCAN_API_KEY,
+      bsc: process.env.BSCSCAN_API_KEY,
+      bscTestnet: process.env.BSCSCAN_API_KEY,
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
+      polygon: process.env.POLYGONSCAN_API_KEY,
+    },
   },
 };
 
