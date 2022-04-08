@@ -1,4 +1,4 @@
-import { ethers } from "hardhat";
+import { ethers, network } from "hardhat";
 import chalk from "chalk";
 
 const dim = (text: string) => {
@@ -21,7 +21,7 @@ async function main() {
   await credit.deployed();
   green(`CarbonCredit deployed to: ${credit.address}`);
   dim(
-    `hh verify --network rinkeby ${credit.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address}`
+    `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address}`
   );
 
   const CapAndTrade = await ethers.getContractFactory("CapAndTrade");
@@ -35,7 +35,7 @@ async function main() {
   await capAndTrade.deployed();
   green(`CapAndTrade deployed to: ${capAndTrade.address}`);
   dim(
-    `hh verify --network rinkeby ${capAndTrade.address} ${credit.address} 10000000000000000000 2022 2060`
+    `hh verify --network ${network.name} ${capAndTrade.address} ${credit.address} 10000000000000000000 2022 2060`
   );
 
   dim(`Grant role to CapAndTrade...`);
