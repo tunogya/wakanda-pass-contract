@@ -46,8 +46,8 @@ contract MintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, IMintableER
     /**
      * @notice Allows the user who has Minter Role to mint tokens for a user account
      * @dev May be overridden to provide more granular control over minting
-     * @param _user Address of the receiver
-     * @param _amount Amount of tokens to mint
+     * @param user Address of the receiver
+     * @param amount Amount of tokens to mint
      */
     function mint(
         address user,
