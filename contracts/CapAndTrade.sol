@@ -76,8 +76,10 @@ contract CapAndTrade {
     /**
      * @notice claim current year's allowance
      */
-    function claim() external virtual {
-        _claim();
+    function claim(
+        address _user
+    ) external virtual {
+        _claim(_user);
     }
 
     /* ============ Internal Functions ============ */
@@ -110,7 +112,9 @@ contract CapAndTrade {
     /**
      * @notice claim current year's allowance
      */
-    function _claim() internal {
+    function _claim(
+        address _user
+    ) internal {
         uint256 year = _yearOf(block.timestamp);
         require(year >= start && year <= end, "CapAndTrade: year out of range");
 
@@ -119,6 +123,6 @@ contract CapAndTrade {
 
         uint256 cap = _capOf(block.timestamp);
         user[year] = cap;
-        token.mint(msg.sender, cap);
+        token.mint(_user, cap);
     }
 }
