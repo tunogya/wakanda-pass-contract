@@ -14,14 +14,14 @@ async function main() {
   dim(`signer: ${signers[0].address}`);
   const CarbonCredit = await ethers.getContractFactory("MintableERC20");
   const credit = await CarbonCredit.deploy(
-    "Wakanda Carbon Credit",
+    "Wakanda Carbon Credits",
     "WCO2",
     signers[0].address
   );
   await credit.deployed();
   green(`CarbonCredit deployed to: ${credit.address}`);
   dim(
-    `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address}`
+    `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credits" WCO2 ${signers[0].address}`
   );
 
   // const CapAndTrade = await ethers.getContractFactory("CapAndTrade");
