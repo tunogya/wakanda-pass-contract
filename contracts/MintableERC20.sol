@@ -46,8 +46,8 @@ contract MintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, IMintableER
     /**
      * @notice Allows the user who has Minter Role to mint tokens for a user account
      * @dev May be overridden to provide more granular control over minting
-     * @param user Address of the receiver
-     * @param amount Amount of tokens to mint
+     * @param user address of the receiver
+     * @param amount amount of tokens to mint
      */
     function mint(
         address user,
@@ -58,7 +58,7 @@ contract MintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, IMintableER
     }
 
     /**
-     * @notice called when user wants to withdraw tokens back to root chain
+     * @notice Called when user wants to withdraw tokens back to root chain
      * @dev Should burn user's tokens. This transaction will be verified when exiting on root chain
      * @param amount amount of tokens to withdraw
      */
@@ -67,7 +67,7 @@ contract MintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, IMintableER
     }
 
     /**
-     * @notice called when token is deposited on root chain
+     * @notice Called when token is deposited on root chain
      * @dev Should be callable only by ChildChainManager
      * Should handle deposit by minting the required amount for user
      * Make sure minting is done only by this function
