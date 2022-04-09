@@ -5,18 +5,18 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
- * @title IChildToken
+ * @title IMintableERC20
  * @author Wakanda Labs
  * @notice
  */
-interface IChildToken is IERC20 {
+interface IMintableERC20 is IERC20 {
     /**
      * @notice Allows the user who has Minter Role to mint tokens for a user account
      * @dev May be overridden to provide more granular control over minting
-     * @param _user Address of the receiver
-     * @param _amount Amount of tokens to mint
+     * @param user Address of the receiver
+     * @param amount Amount of tokens to mint
      */
-    function mint(address _user, uint256 _amount) external;
+    function mint(address user, uint256 amount) external;
 
     /**
      * @notice called when user wants to withdraw tokens back to root chain

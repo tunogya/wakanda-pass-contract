@@ -2,7 +2,7 @@
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "./interfaces/IChildToken.sol";
+import "./interfaces/IMintableERC20.sol";
 
 pragma solidity ^0.8.9;
 
@@ -21,7 +21,7 @@ contract CapAndTrade {
     uint256 public immutable end;
 
     /// @notice CarbonCredit Token address
-    IChildToken public immutable token;
+    IMintableERC20 public immutable token;
 
     /// @notice Maps user => year => allowance
     mapping(address => mapping(uint256 => uint256)) public allowances;
@@ -36,7 +36,7 @@ contract CapAndTrade {
      * @param _end end year
      */
     constructor(
-        IChildToken _token,
+        IMintableERC20 _token,
         uint256 _genesis,
         uint256 _start,
         uint256 _end

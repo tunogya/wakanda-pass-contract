@@ -7,13 +7,13 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "./interfaces/IChildToken.sol";
+import "./interfaces/IMintableERC20.sol";
 
 /**
  * @title MintableERC20
  * @author Wakanda Labs
  */
-contract MintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, IChildToken {
+contract MintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, IMintableERC20 {
     using SafeERC20 for IERC20;
 
     /* ============ ROLES ============ */
@@ -50,11 +50,11 @@ contract MintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, IChildToken
      * @param _amount Amount of tokens to mint
      */
     function mint(
-        address _user,
-        uint256 _amount
+        address user,
+        uint256 amount
     ) external virtual override onlyRole(MINTER_ROLE)
     {
-        _mint(_user, _amount);
+        _mint(user, amount);
     }
 
     /**
