@@ -63,7 +63,7 @@ contract MintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, IChildToken
      * @param amount amount of tokens to withdraw
      */
     function withdraw(uint256 amount) external {
-        _burn(msg.sender, amount);
+        _burn(_msgSender(), amount);
     }
 
     /**

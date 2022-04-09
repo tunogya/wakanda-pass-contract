@@ -12,19 +12,16 @@ const green = (text: string) => {
 async function main() {
   const signers = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
-  const CarbonCredit = await ethers.getContractFactory("ChildMintableERC20");
-  const MumbaiChildManager = "0xb5505a6d998549090530911180f38aC5130101c6";
-  // const MainnetChildManager = "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa";
+  const CarbonCredit = await ethers.getContractFactory("MintableERC20");
   const credit = await CarbonCredit.deploy(
     "Wakanda Carbon Credit",
     "WCO2",
-    signers[0].address,
-    MumbaiChildManager
+    signers[0].address
   );
   await credit.deployed();
   green(`CarbonCredit deployed to: ${credit.address}`);
   dim(
-    `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address} ${MumbaiChildManager}`
+    `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address}`
   );
 
   // const CapAndTrade = await ethers.getContractFactory("CapAndTrade");
