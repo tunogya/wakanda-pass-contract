@@ -9,7 +9,6 @@ pragma solidity ^0.8.9;
 /**
  * @title CapAndTrade
  * @author Wakanda Labs
- * @notice
  */
 contract CapAndTrade {
     /* ============ Global Variables ============ */
