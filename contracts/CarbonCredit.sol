@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity ^0.8.6;
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -20,19 +20,22 @@ contract CarbonCredit is AccessControl, ERC20Permit, ERC20Burnable, ICarbonCredi
     /* ============ ROLES ============ */
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant DEPOSITOR_ROLE = keccak256("DEPOSITOR_ROLE");
 
     /* ============ Initialize ============ */
 
     /**
-     * @notice Deploy CarbonCredit smart contract.
-     * @param _name Address of the owner of the DrawBuffer.
-     * @param _symbol Draw ring buffer cardinality.
-     * @param _admin Admin.
+     * @notice Deploy CarbonCredit smart contract
+     * @param _name token name
+     * @param _symbol token symbol
+     * @param _admin admin, default has the role of MINTER_ROLE
+     * @param _childChainManager child chain manager, has the role of DEPOSITOR_ROLE
      */
     constructor(
         string memory _name,
         string memory _symbol,
-        address _admin
+        address _admin,
+        address _childChainManager
     ) ERC20(_name, _symbol) ERC20Permit(_name) {
         require(
             address(_admin) != address(0),
@@ -40,6 +43,7 @@ contract CarbonCredit is AccessControl, ERC20Permit, ERC20Burnable, ICarbonCredi
         );
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
         _grantRole(MINTER_ROLE, _admin);
+        _grantRole(DEPOSITOR_ROLE, _childChainManager);
     }
 
     /* ============ External Functions ============ */
@@ -57,4 +61,31 @@ contract CarbonCredit is AccessControl, ERC20Permit, ERC20Burnable, ICarbonCredi
     {
         _mint(_user, _amount);
     }
+
+    /**
+     * @notice called when user wants to withdraw tokens back to root chain
+     * @dev Should burn user's tokens. This transaction will be verified when exiting on root chain
+     * @param amount amount of tokens to withdraw
+     */
+    function withdraw(uint256 amount) external {
+        _burn(_msgSender(), amount);
+    }
+
+    /**
+     * @notice called when token is deposited on root chain
+     * @dev Should be callable only by ChildChainManager
+     * Should handle deposit by minting the required amount for user
+     * Make sure minting is done only by this function
+     * @param user user address for whom deposit is being done
+     * @param depositData abi encoded amount
+     */
+    function deposit(address user, bytes calldata depositData)
+    external
+    override
+    onlyRole(DEPOSITOR_ROLE)
+    {
+        uint256 amount = abi.decode(depositData, (uint256));
+        _mint(user, amount);
+    }
+
 }
