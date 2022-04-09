@@ -61,6 +61,12 @@ const config: HardhatUserConfig = {
         mnemonic: mnemonic,
       },
     },
+    polygon: {
+      url: process.env.POLYGON_URL || "",
+      accounts: {
+        mnemonic: mnemonic,
+      },
+    },
     polygonMumbai: {
       url: process.env.MUMBAI_URL || "",
       accounts: {
@@ -86,8 +92,8 @@ const config: HardhatUserConfig = {
       arbitrumTestnet: process.env.ARBISCAN_API_KEY,
       bsc: process.env.BSCSCAN_API_KEY,
       bscTestnet: process.env.BSCSCAN_API_KEY,
-      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
       polygon: process.env.POLYGONSCAN_API_KEY,
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
     },
   },
 };
