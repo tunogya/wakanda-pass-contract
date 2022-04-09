@@ -7,14 +7,13 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "./interfaces/ICarbonCredit.sol";
+import "./interfaces/IChildToken.sol";
 
 /**
- * @title CarbonCredit
+ * @title ChildMintableERC20
  * @author Wakanda Labs
- * @notice
  */
-contract CarbonCredit is AccessControl, ERC20Permit, ERC20Burnable, ICarbonCredit {
+contract ChildMintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, IChildToken {
     using SafeERC20 for IERC20;
 
     /* ============ ROLES ============ */
@@ -25,7 +24,7 @@ contract CarbonCredit is AccessControl, ERC20Permit, ERC20Burnable, ICarbonCredi
     /* ============ Initialize ============ */
 
     /**
-     * @notice Deploy CarbonCredit smart contract
+     * @notice Deploy ChildMintableERC20 smart contract
      * @param _name token name
      * @param _symbol token symbol
      * @param _admin admin, default has the role of MINTER_ROLE
@@ -87,5 +86,4 @@ contract CarbonCredit is AccessControl, ERC20Permit, ERC20Burnable, ICarbonCredi
         uint256 amount = abi.decode(depositData, (uint256));
         _mint(user, amount);
     }
-
 }

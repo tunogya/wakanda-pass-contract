@@ -5,11 +5,11 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
- * @title CarbonCredit
+ * @title IChildToken
  * @author Wakanda Labs
  * @notice
  */
-interface ICarbonCredit is IERC20 {
+interface IChildToken is IERC20 {
     /**
      * @notice Allows the user who has Minter Role to mint tokens for a user account
      * @dev May be overridden to provide more granular control over minting
