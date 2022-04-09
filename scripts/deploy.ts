@@ -24,7 +24,7 @@ async function main() {
   await credit.deployed();
   green(`CarbonCredit deployed to: ${credit.address}`);
   dim(
-    `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address}`
+    `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address} ${MumbaiChildManager}`
   );
 
   // const CapAndTrade = await ethers.getContractFactory("CapAndTrade");
