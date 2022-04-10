@@ -6,7 +6,7 @@ Carbon Trading System by Wakanda Labs.
 
 ## Carbon Credits
 
-# 2. **Cap and Trade** Mode
+# 2. **capOfClaim and Trade** Mode
 
 ## Carbon Allowances
 
