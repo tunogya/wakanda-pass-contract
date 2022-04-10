@@ -43,7 +43,6 @@ async function main() {
   dim(
     `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credits" WCO2 ${signers[0].address}`
   );
-  await credit.grantRole("", "");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
