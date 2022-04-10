@@ -53,6 +53,7 @@ contract ERC20Faucet is Ownable {
         require(amount <= capOfClaim, "ERC20Faucet/withdraw-amount-gt-capOfClaim");
         require(lastClaim[user] <= block.timestamp - claimInterval, "ERC20Faucet/last-withdraw-interval-gt-delay");
 
+        lastClaim[user] = block.timestamp;
         token.mint(user, amount);
     }
 
