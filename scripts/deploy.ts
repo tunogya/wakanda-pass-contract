@@ -32,38 +32,27 @@ const green = (text: string) => {
 async function main() {
   const signers = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
-  // const CarbonCredit = await ethers.getContractFactory("MintableERC20");
-  // const credit = await CarbonCredit.deploy(
-  //   "Wakanda Carbon Credits",
-  //   "WCO2",
-  //   signers[0].address
-  // );
-  // credit.attach("0x50fE6696f260fC815DC3C602B71fe6C991324468");
-  // // await credit.deployed();
-  // green(`CarbonCredit deployed to: ${credit.address}`);
-  // dim(
-  //   `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credits" WCO2 ${signers[0].address}`
-  // );
-  // const WakandaGovernor = await ethers.getContractFactory("WakandaGovernor");
-  // const wakandaGovernor = await WakandaGovernor.deploy(
-  //   "Wakanda Governor",
-  //   credit.address
-  // );
-  // await wakandaGovernor.deployed();
-  // green(`Wakanda Governor deployed to: ${wakandaGovernor.address}`);
-  // dim(
-  //   `hh verify --network ${network.name} ${wakandaGovernor.address} "Wakanda Governor" ${credit.address}`
-  // );
-  const Faucet = await ethers.getContractFactory("ERC20Faucet");
-  const faucet = await Faucet.deploy(
-    "0x50fE6696f260fC815DC3C602B71fe6C991324468",
-    "2500000000000000000",
-    "604800"
+  const CarbonCredit = await ethers.getContractFactory("MintableERC20");
+  const credit = await CarbonCredit.deploy(
+    "Wakanda Carbon Credit",
+    "WCO2",
+    signers[0].address
   );
-  await faucet.deployed();
-  green(`WCO2 Faucet deployed to: ${faucet.address}`);
+  // credit.attach("0x50fE6696f260fC815DC3C602B71fe6C991324468");
+  await credit.deployed();
+  green(`CarbonCredit deployed to: ${credit.address}`);
   dim(
-    `hh verify --network ${network.name} ${faucet.address} 0x50fE6696f260fC815DC3C602B71fe6C991324468 2500000000000000000 604800`
+    `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address}`
+  );
+  const WakandaGovernor = await ethers.getContractFactory("WakandaGovernor");
+  const wakandaGovernor = await WakandaGovernor.deploy(
+    "Wakanda Governor",
+    credit.address
+  );
+  await wakandaGovernor.deployed();
+  green(`Wakanda Governor deployed to: ${wakandaGovernor.address}`);
+  dim(
+    `hh verify --network ${network.name} ${wakandaGovernor.address} "Wakanda Governor" ${credit.address}`
   );
 }
 
