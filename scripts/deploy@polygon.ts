@@ -32,16 +32,16 @@ const green = (text: string) => {
 async function main() {
   const signers = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
-  const CarbonCredit = await ethers.getContractFactory("MintableERC20");
-  const MintableERC20 = await CarbonCredit.deploy(
+  const MintableERC20 = await ethers.getContractFactory("MintableERC20");
+  const WCO2 = await MintableERC20.deploy(
     "Wakanda Carbon MintableERC20",
     "WCO2",
     "0xB964b01281DF695Db1679bE4365Bc6afB7361CbF"
   );
-  await MintableERC20.deployed();
-  green(`Wakanda Carbon MintableERC20 deployed to: ${MintableERC20.address}`);
+  await WCO2.deployed();
+  green(`Wakanda Carbon MintableERC20 deployed to: ${WCO2.address}`);
   dim(
-    `hh verify --network ${network.name} ${MintableERC20.address} "Wakanda Carbon MintableERC20" WCO2 0xB964b01281DF695Db1679bE4365Bc6afB7361CbF`
+    `hh verify --network ${network.name} ${WCO2.address} "Wakanda Carbon MintableERC20" WCO2 0xB964b01281DF695Db1679bE4365Bc6afB7361CbF`
   );
   // const WakandaGovernor = await ethers.getContractFactory("WakandaGovernor");
   // const wakandaGovernor = await WakandaGovernor.deploy(

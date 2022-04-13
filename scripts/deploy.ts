@@ -32,27 +32,26 @@ const green = (text: string) => {
 async function main() {
   const signers = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
-  const CarbonCredit = await ethers.getContractFactory("MintableERC20");
-  const MintableERC20 = await CarbonCredit.deploy(
-    "Wakanda Carbon MintableERC20",
-    "WCO2",
-    signers[0].address
+  // const MintableERC20 = await ethers.getContractFactory("MintableERC20");
+  // const WCO2 = await MintableERC20.deploy(
+  //   "Wakanda Carbon MintableERC20",
+  //   "WCO2",
+  //   signers[0].address
+  // );
+  // WCO2.attach("0x50fE6696f260fC815DC3C602B71fe6C991324468");
+  // await WCO2.deployed();
+  // green(`CarbonCredit deployed to: ${WCO2.address}`);
+  // dim(
+  //   `hh verify --network ${network.name} ${WCO2.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address}`
+  // );
+  const Rewards = await ethers.getContractFactory("Rewards");
+  const rewards = await Rewards.deploy(
+    "0x50fE6696f260fC815DC3C602B71fe6C991324468"
   );
-  // MintableERC20.attach("0x50fE6696f260fC815DC3C602B71fe6C991324468");
-  await MintableERC20.deployed();
-  green(`CarbonCredit deployed to: ${MintableERC20.address}`);
+  await rewards.deployed();
+  green(`Rewards deployed to ${rewards.address}`);
   dim(
-    `hh verify --network ${network.name} ${MintableERC20.address} "Wakanda Carbon MintableERC20" WCO2 ${signers[0].address}`
-  );
-  const WakandaGovernor = await ethers.getContractFactory("WakandaGovernor");
-  const wakandaGovernor = await WakandaGovernor.deploy(
-    "Wakanda Governor",
-    MintableERC20.address
-  );
-  await wakandaGovernor.deployed();
-  green(`Wakanda Governor deployed to: ${wakandaGovernor.address}`);
-  dim(
-    `hh verify --network ${network.name} ${wakandaGovernor.address} "Wakanda Governor" ${MintableERC20.address}`
+    `hh verify --network ${network.name} ${rewards.address} 0x50fE6696f260fC815DC3C602B71fe6C991324468`
   );
 }
 
