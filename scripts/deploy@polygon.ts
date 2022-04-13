@@ -33,25 +33,25 @@ async function main() {
   const signers = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
   const CarbonCredit = await ethers.getContractFactory("MintableERC20");
-  const credit = await CarbonCredit.deploy(
-    "Wakanda Carbon Credit",
+  const MintableERC20 = await CarbonCredit.deploy(
+    "Wakanda Carbon MintableERC20",
     "WCO2",
     "0xB964b01281DF695Db1679bE4365Bc6afB7361CbF"
   );
-  await credit.deployed();
-  green(`Wakanda Carbon Credit deployed to: ${credit.address}`);
+  await MintableERC20.deployed();
+  green(`Wakanda Carbon MintableERC20 deployed to: ${MintableERC20.address}`);
   dim(
-    `hh verify --network ${network.name} ${credit.address} "Wakanda Carbon Credit" WCO2 0xB964b01281DF695Db1679bE4365Bc6afB7361CbF`
+    `hh verify --network ${network.name} ${MintableERC20.address} "Wakanda Carbon MintableERC20" WCO2 0xB964b01281DF695Db1679bE4365Bc6afB7361CbF`
   );
   // const WakandaGovernor = await ethers.getContractFactory("WakandaGovernor");
   // const wakandaGovernor = await WakandaGovernor.deploy(
   //   "Wakanda Governor",
-  //   credit.address
+  //   MintableERC20.address
   // );
   // await wakandaGovernor.deployed();
   // green(`Wakanda Governor deployed to: ${wakandaGovernor.address}`);
   // dim(
-  //   `hh verify --network ${network.name} ${wakandaGovernor.address} "Wakanda Governor" ${credit.address}`
+  //   `hh verify --network ${network.name} ${wakandaGovernor.address} "Wakanda Governor" ${MintableERC20.address}`
   // );
   // const Faucet = await ethers.getContractFactory("ERC20Faucet");
   // const faucet = await Faucet.deploy(
