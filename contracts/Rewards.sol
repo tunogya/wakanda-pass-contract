@@ -78,13 +78,13 @@ contract Rewards is IRewards, Ownable {
     /**
      * @notice Emitted when rewards have been claimed.
      * @param promotionId Id of the promotion for which epoch rewards were claimed
-     * @param epochIds Ids of the epochs being claimed
+     * @param epochId Id of the epoch being claimed
      * @param user Address of the user for which the rewards were claimed
      * @param amount Amount of tokens transferred to the recipient address
      */
     event RewardsClaimed(
         uint256 indexed promotionId,
-        uint8[] epochIds,
+        uint8 epochId,
         address indexed user,
         uint256 amount
     );
@@ -207,34 +207,28 @@ contract Rewards is IRewards, Ownable {
     }
 
     /// @inheritdoc IRewards
-    function claimRewards(
+    function claimReward(
         address _user,
-        uint256 _promotionId,
-        uint8[] calldata _epochIds
+        uint256 _promotionId
     ) external override returns (uint256) {
         Promotion memory _promotion = _getPromotion(_promotionId);
 
-        uint256 _rewardsAmount;
         uint256 _userClaimedEpochs = _claimedEpochs[_promotionId][_user];
-        uint256 _epochIdsLength = _epochIds.length;
 
-        for (uint256 index = 0; index < _epochIdsLength; index++) {
-            uint8 _epochId = _epochIds[index];
+        uint8 _epochId = uint8(_getCurrentEpochId(_promotion));
 
-            require(!_isClaimedEpoch(_userClaimedEpochs, _epochId), "Rewards/rewards-claimed");
+        require(!_isClaimedEpoch(_userClaimedEpochs, _epochId), "Rewards/rewards-claimed");
 
-            _rewardsAmount += _promotion.tokensPerEpoch;
-            _userClaimedEpochs = _updateClaimedEpoch(_userClaimedEpochs, _epochId);
-        }
+        _userClaimedEpochs = _updateClaimedEpoch(_userClaimedEpochs, _epochId);
 
         _claimedEpochs[_promotionId][_user] = _userClaimedEpochs;
-        _promotions[_promotionId].rewardsClaimed += _rewardsAmount;
+        _promotions[_promotionId].rewardsClaimed += _promotion.tokensPerEpoch;
 
-        token.mint(_user, _rewardsAmount);
+        token.mint(_user, _promotion.tokensPerEpoch);
 
-        emit RewardsClaimed(_promotionId, _epochIds, _user, _rewardsAmount);
+        emit RewardsClaimed(_promotionId, _epochId, _user, _promotion.tokensPerEpoch);
 
-        return _rewardsAmount;
+        return _promotion.tokensPerEpoch;
     }
 
     /// @inheritdoc IRewards

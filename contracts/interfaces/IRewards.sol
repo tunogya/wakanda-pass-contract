@@ -76,13 +76,11 @@ interface IRewards {
      * @dev Rewards can only be claimed for a past epoch.
      * @param _user Address of the user to claim rewards for
      * @param _promotionId Id of the promotion to claim rewards for
-     * @param _epochIds Epoch ids to claim rewards for
-     * @return Total amount of rewards claimed
+     * @return Amount of reward claimed
      */
-    function claimRewards(
+    function claimReward(
         address _user,
-        uint256 _promotionId,
-        uint8[] calldata _epochIds
+        uint256 _promotionId
     ) external returns (uint256);
 
     /**
