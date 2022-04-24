@@ -251,9 +251,10 @@ contract Rewards is IRewards, Ownable {
 
         uint256 _epochIdsLength = _epochIds.length;
         uint256[] memory _rewardsAmount = new uint256[](_epochIdsLength);
+        uint256 currentEpochId = _getCurrentEpochId(_getPromotion(_promotionId));
 
         for (uint256 index = 0; index < _epochIdsLength; index++) {
-            if (_isClaimedEpoch(_claimedEpochs[_promotionId][_user], uint8(index))) {
+            if ((_epochIds[index] < currentEpochId) || _isClaimedEpoch(_claimedEpochs[_promotionId][_user], _epochIds[index])) {
                 _rewardsAmount[index] = 0;
             } else {
                 _rewardsAmount[index] = _promotion.tokensPerEpoch;

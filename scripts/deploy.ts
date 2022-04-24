@@ -1,5 +1,7 @@
 import { ethers, network } from "hardhat";
 import chalk from "chalk";
+import { ContractFactory } from "ethers";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 const dim = (text: string) => {
   console.log(chalk.dim(text));
@@ -30,9 +32,11 @@ const green = (text: string) => {
  */
 
 async function main() {
-  const signers = await ethers.getSigners();
+  const signers: SignerWithAddress[] = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
-  const MintableERC20 = await ethers.getContractFactory("MintableERC20");
+  const MintableERC20: ContractFactory = await ethers.getContractFactory(
+    "MintableERC20"
+  );
   // const WCO2 = await MintableERC20.deploy(
   //   "Wakanda Carbon MintableERC20",
   //   "WCO2",
@@ -46,7 +50,7 @@ async function main() {
   dim(
     `hh verify --network ${network.name} ${WCO2.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address}`
   );
-  const Rewards = await ethers.getContractFactory("Rewards");
+  const Rewards: ContractFactory = await ethers.getContractFactory("Rewards");
   const rewards = await Rewards.deploy(
     "0x50fE6696f260fC815DC3C602B71fe6C991324468"
   );
