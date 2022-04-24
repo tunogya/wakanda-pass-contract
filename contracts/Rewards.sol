@@ -49,23 +49,19 @@ contract Rewards is IRewards, Ownable {
     /**
      * @notice Emitted when a promotion is ended.
      * @param promotionId Id of the promotion being ended
-     * @param recipient Address of the recipient that will receive the remaining rewards
      * @param epochNumber Epoch number at which the promotion ended
      */
     event PromotionEnded(
         uint256 indexed promotionId,
-        address indexed recipient,
         uint8 epochNumber
     );
 
     /**
      * @notice Emitted when a promotion is destroyed.
      * @param promotionId Id of the promotion being destroyed
-     * @param recipient Address of the recipient that will receive the unclaimed rewards
      */
     event PromotionDestroyed(
-        uint256 indexed promotionId,
-        address indexed recipient
+        uint256 indexed promotionId
     );
 
     /**
@@ -132,34 +128,30 @@ contract Rewards is IRewards, Ownable {
     }
 
     /// @inheritdoc IRewards
-    function endPromotion(uint256 _promotionId, address _to)
+    function endPromotion(uint256 _promotionId)
     external
     override
     onlyOwner
     returns (bool)
     {
-        require(_to != address(0), "Rewards/payee-not-zero-addr");
-
         Promotion memory _promotion = _getPromotion(_promotionId);
         _requirePromotionActive(_promotion);
 
         uint8 _epochNumber = uint8(_getCurrentEpochId(_promotion));
         _promotions[_promotionId].numberOfEpochs = _epochNumber;
 
-        emit PromotionEnded(_promotionId, _to, _epochNumber);
+        emit PromotionEnded(_promotionId, _epochNumber);
 
         return true;
     }
 
     /// @inheritdoc IRewards
-    function destroyPromotion(uint256 _promotionId, address _to)
+    function destroyPromotion(uint256 _promotionId)
     external
     override
     onlyOwner
     returns (bool)
     {
-        require(_to != address(0), "Rewards/payee-not-zero-addr");
-
         Promotion memory _promotion = _getPromotion(_promotionId);
 
         uint256 _promotionEndTimestamp = _getPromotionEndTimestamp(_promotion);
@@ -175,7 +167,7 @@ contract Rewards is IRewards, Ownable {
 
         delete _promotions[_promotionId];
 
-        emit PromotionDestroyed(_promotionId, _to);
+        emit PromotionDestroyed(_promotionId);
 
         return true;
     }

@@ -43,24 +43,20 @@ interface IRewards {
     ) external returns (uint256);
 
     /**
-     * @notice End currently active promotion and send promotion tokens back to the creator.
-     * @dev Will only send back tokens from the epochs that have not completed.
+     * @notice End currently active promotion.
      * @param _promotionId Promotion id to end
-     * @param _to Address that will receive the remaining tokens if there are any left
      * @return true if operation was successful
      */
-    function endPromotion(uint256 _promotionId, address _to) external returns (bool);
+    function endPromotion(uint256 _promotionId) external returns (bool);
 
     /**
-     * @notice Delete an inactive promotion and send promotion tokens back to the creator.
-     * @dev Will send back all the tokens that have not been claimed yet by users.
+     * @notice Delete an inactive promotion.
      * @dev This function will revert if the promotion is still active.
      * @dev This function will revert if the grace period is not over yet.
      * @param _promotionId Promotion id to destroy
-     * @param _to Address that will receive the remaining tokens if there are any left
      * @return True if operation was successful
      */
-    function destroyPromotion(uint256 _promotionId, address _to) external returns (bool);
+    function destroyPromotion(uint256 _promotionId) external returns (bool);
 
     /**
      * @notice Extend promotion by adding more epochs.
