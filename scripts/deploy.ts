@@ -56,13 +56,15 @@ async function main() {
   );
   await rewards.deployed();
   green(`Rewards deployed to ${rewards.address}`);
+  dim(
+    `hh verify --network ${network.name} ${rewards.address} 0x50fE6696f260fC815DC3C602B71fe6C991324468`
+  );
+  dim("Grant minter role to rewards...");
   await WCO2.grantRole(
     "0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6", // MINTER_ROLE
     rewards.address
   );
-  dim(
-    `hh verify --network ${network.name} ${rewards.address} 0x50fE6696f260fC815DC3C602B71fe6C991324468`
-  );
+  dim("Grant minter role to rewards success");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
