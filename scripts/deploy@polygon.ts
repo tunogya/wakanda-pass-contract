@@ -34,36 +34,15 @@ async function main() {
   dim(`signer: ${signers[0].address}`);
   const MintableERC20 = await ethers.getContractFactory("MintableERC20");
   const WCO2 = await MintableERC20.deploy(
-    "Wakanda Carbon MintableERC20",
+    "Wakanda Carbon Credit",
     "WCO2",
     "0xB964b01281DF695Db1679bE4365Bc6afB7361CbF"
   );
   await WCO2.deployed();
   green(`Wakanda Carbon MintableERC20 deployed to: ${WCO2.address}`);
   dim(
-    `hh verify --network ${network.name} ${WCO2.address} "Wakanda Carbon MintableERC20" WCO2 0xB964b01281DF695Db1679bE4365Bc6afB7361CbF`
+    `hh verify --network ${network.name} ${WCO2.address} "Wakanda Carbon Credit" WCO2 0xB964b01281DF695Db1679bE4365Bc6afB7361CbF`
   );
-  // const WakandaGovernor = await ethers.getContractFactory("WakandaGovernor");
-  // const wakandaGovernor = await WakandaGovernor.deploy(
-  //   "Wakanda Governor",
-  //   MintableERC20.address
-  // );
-  // await wakandaGovernor.deployed();
-  // green(`Wakanda Governor deployed to: ${wakandaGovernor.address}`);
-  // dim(
-  //   `hh verify --network ${network.name} ${wakandaGovernor.address} "Wakanda Governor" ${MintableERC20.address}`
-  // );
-  // const Faucet = await ethers.getContractFactory("ERC20Faucet");
-  // const faucet = await Faucet.deploy(
-  //   "0x50fE6696f260fC815DC3C602B71fe6C991324468",
-  //   "2500000000000000000",
-  //   "604800"
-  // );
-  // await faucet.deployed();
-  // green(`WCO2 Faucet deployed to: ${faucet.address}`);
-  // dim(
-  //   `hh verify --network ${network.name} ${faucet.address} 0x50fE6696f260fC815DC3C602B71fe6C991324468 2500000000000000000 604800`
-  // );
 }
 
 // We recommend this pattern to be able to use async/await everywhere

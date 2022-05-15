@@ -37,28 +37,24 @@ async function main() {
   const MintableERC20: ContractFactory = await ethers.getContractFactory(
     "MintableERC20"
   );
-  // const WCO2 = await MintableERC20.deploy(
-  //   "Wakanda Carbon MintableERC20",
-  //   "WCO2",
-  //   signers[0].address
-  // );
-  // await WCO2.deployed();
-  const WCO2 = await MintableERC20.attach(
-    "0x50fE6696f260fC815DC3C602B71fe6C991324468"
+  const WCO2 = await MintableERC20.deploy(
+    "Wakanda Carbon Credit",
+    "WCO2",
+    signers[0].address
   );
+  await WCO2.deployed();
+  // const WCO2 = await MintableERC20.attach(
+  //   ""
+  // );
   green(`WCO2 deployed to: ${WCO2.address}`);
   dim(
     `hh verify --network ${network.name} ${WCO2.address} "Wakanda Carbon Credit" WCO2 ${signers[0].address}`
   );
   const Rewards: ContractFactory = await ethers.getContractFactory("Rewards");
-  const rewards = await Rewards.deploy(
-    "0x50fE6696f260fC815DC3C602B71fe6C991324468"
-  );
+  const rewards = await Rewards.deploy(WCO2.address);
   await rewards.deployed();
   green(`Rewards deployed to ${rewards.address}`);
-  dim(
-    `hh verify --network ${network.name} ${rewards.address} 0x50fE6696f260fC815DC3C602B71fe6C991324468`
-  );
+  dim(`hh verify --network ${network.name} ${rewards.address} ${WCO2.address}`);
   dim("Grant minter role to rewards...");
   await WCO2.grantRole(
     "0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6", // MINTER_ROLE
