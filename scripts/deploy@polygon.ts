@@ -1,5 +1,6 @@
 import { ethers, network } from "hardhat";
 import chalk from "chalk";
+import { ContractFactory } from "ethers";
 
 const dim = (text: string) => {
   console.log(chalk.dim(text));
@@ -33,16 +34,24 @@ async function main() {
   const signers = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
   const MintableERC20 = await ethers.getContractFactory("MintableERC20");
-  const WCO2 = await MintableERC20.deploy(
-    "Wakanda Carbon Credit",
-    "WCO2",
-    "0xB964b01281DF695Db1679bE4365Bc6afB7361CbF"
+  // const WCO2 = await MintableERC20.deploy(
+  //   "Wakanda Carbon Credit",
+  //   "WCO2",
+  //   "0xB964b01281DF695Db1679bE4365Bc6afB7361CbF"
+  // );
+  // await WCO2.deployed();
+  const WCO2 = MintableERC20.attach(
+    "0x7Fd8e00bba10685794326917e3f1c0B4db2D93F7"
   );
-  await WCO2.deployed();
   green(`Wakanda Carbon MintableERC20 deployed to: ${WCO2.address}`);
   dim(
     `hh verify --network ${network.name} ${WCO2.address} "Wakanda Carbon Credit" WCO2 0xB964b01281DF695Db1679bE4365Bc6afB7361CbF`
   );
+  const Rewards: ContractFactory = await ethers.getContractFactory("Rewards");
+  const rewards = await Rewards.deploy(WCO2.address);
+  await rewards.deployed();
+  green(`Rewards deployed to ${rewards.address}`);
+  dim(`hh verify --network ${network.name} ${rewards.address} ${WCO2.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
