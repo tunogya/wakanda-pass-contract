@@ -1,6 +1,4 @@
-# Carbon Trading System
-
-Carbon Trading System by Wakanda Labs.
+# Carbon Cycle Emulator
 
 ## Deploy Contract
 

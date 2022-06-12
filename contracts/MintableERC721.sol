@@ -21,7 +21,7 @@ contract MintableERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Bur
     ) ERC721(_name, _symbol) {
         require(
             address(_admin) != address(0),
-            "CarbonCredit/admin-not-zero-address"
+            "MintableERC721/admin-not-zero-address"
         );
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
         _grantRole(MINTER_ROLE, _admin);

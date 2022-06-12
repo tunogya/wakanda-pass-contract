@@ -37,7 +37,7 @@ contract MintableERC20 is AccessControl, ERC20Permit, ERC20Burnable, ERC20Votes,
     ) ERC20(_name, _symbol) ERC20Permit(_name) {
         require(
             address(_admin) != address(0),
-            "CarbonCredit/admin-not-zero-address"
+            "MintableERC20/admin-not-zero-address"
         );
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
     }
