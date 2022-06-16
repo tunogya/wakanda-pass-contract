@@ -1,31 +1,49 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: GPL-3.0
+
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract MintableERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, AccessControl {
+/**
+ * @title Hash Planet
+ * @dev Hash Planet use geohash algorithm. Each NFT can be cut into smaller pieces
+ * @author Wakanda Labs
+ */
+contract HashPlanet is ERC721, ERC721Enumerable, ERC721URIStorage {
     using Counters for Counters.Counter;
 
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     Counters.Counter private _tokenIdCounter;
+
+    string[32] constant alphabets = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "b", "c", "d", "e", "f", "g", "h",
+    "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
     constructor(
         string memory _name,
         string memory _symbol,
-        address _admin
+        address _genesis
     ) ERC721(_name, _symbol) {
         require(
-            address(_admin) != address(0),
-            "MintableERC721/admin-not-zero-address"
+            address(_genesis) != address(0),
+            "HashPlanet/genesis-not-zero-address"
         );
-        _grantRole(DEFAULT_ADMIN_ROLE, _admin);
-        _grantRole(MINTER_ROLE, _admin);
+        init(_genesis);
     }
 
+    function init(address to) internal {
+        require(_tokenIdCounter.current() = 0, "HashPlanet/only-can-be-init-once");
+
+
+        safeMint(to, "0");
+
+    }
+
+    /**
+     * @param to receiver address
+     * @param uri geohash
+     */
     function safeMint(address to, string memory uri) public onlyRole(MINTER_ROLE) {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
@@ -58,7 +76,7 @@ contract MintableERC721 is ERC721, ERC721Enumerable, ERC721URIStorage, AccessCon
     function supportsInterface(bytes4 interfaceId)
     public
     view
-    override(ERC721, ERC721Enumerable, AccessControl)
+    override(ERC721, ERC721Enumerable)
     returns (bool)
     {
         return super.supportsInterface(interfaceId);
