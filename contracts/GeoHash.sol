@@ -30,13 +30,8 @@ contract HashPlanet is ERC721, ERC721Enumerable, ERC721URIStorage {
             address(_genesis) != address(0),
             "HashPlanet/genesis-not-zero-address"
         );
-        init(_genesis);
-    }
-
-    function init(address to) internal {
-        require(_tokenIdCounter.current() == 0, "HashPlanet/only-can-be-init-once");
         for (uint8 i = 0; i < 32; i ++) {
-            safeMint(to, string(abi.encodePacked(alphabet[i])));
+            safeMint(_genesis, string(abi.encodePacked(alphabet[i])));
         }
     }
 
