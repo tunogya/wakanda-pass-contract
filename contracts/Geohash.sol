@@ -8,11 +8,11 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
- * @title Hash Planet
- * @dev Hash Planet use geohash algorithm. Each NFT can be cut into smaller pieces
+ * @title Geohash
+ * @dev Geohash use geohash algorithm. Each NFT can be cut into smaller pieces
  * @author Wakanda Labs
  */
-contract HashPlanet is ERC721, ERC721Enumerable, ERC721URIStorage {
+contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -28,22 +28,24 @@ contract HashPlanet is ERC721, ERC721Enumerable, ERC721URIStorage {
     ) ERC721(_name, _symbol) {
         require(
             address(_genesis) != address(0),
-            "HashPlanet/genesis-not-zero-address"
+            "Geohash/genesis-not-zero-address"
         );
         for (uint8 i = 0; i < 32; i ++) {
-            safeMint(_genesis, string(abi.encodePacked(alphabet[i])));
+            uint256 tokenId = _tokenIdCounter.current();
+            _tokenIdCounter.increment();
+            _safeMint(_genesis, tokenId);
+            _setTokenURI(tokenId, string(abi.encodePacked(alphabet[i])));
         }
     }
 
     /**
-     * @param to receiver address
-     * @param uri geohash
+     * @notice If you want to cut a piece of land
+     * this will destroy your original land and generate 32 sub-lands
+     * all of which are yours
+     * @param tokenId
      */
-    function safeMint(address to, string memory uri) internal {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri);
+    function division(uint256 tokenId) public {
+        require(_owners[tokenId] == msg.sender, "");
     }
 
     // The following functions are overrides required by Solidity.

@@ -14,15 +14,15 @@ const green = (text: string) => {
 async function main() {
   const signers: SignerWithAddress[] = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
-  const GeoHash: ContractFactory = await ethers.getContractFactory("GeoHash");
-  const geohash = await GeoHash.deploy("GeoHash", "GH", signers[0].address);
+  const GeoHash: ContractFactory = await ethers.getContractFactory("Geohash");
+  const geohash = await GeoHash.deploy("Geohash", "GH", signers[0].address);
   await geohash.deployed();
-  // const geohash = await GeoHash.attach(
+  // const geohash = await Geohash.attach(
   //   ""
   // );
-  green(`hashPlanet deployed to: ${geohash.address}`);
+  green(`Geohash deployed to: ${geohash.address}`);
   dim(
-    `hh verify --network ${network.name} ${geohash.address} GeoHash GH ${signers[0].address}`
+    `hh verify --network ${network.name} ${geohash.address} Geohash GH ${signers[0].address}`
   );
 }
 
