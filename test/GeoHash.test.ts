@@ -6,27 +6,26 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 const { getSigners } = ethers;
 const { parseEther: toWei } = utils;
 
-describe("TestMintableERC20", function () {
+describe("TestHashPlanet", function () {
   let token: Contract;
   let wallet1: SignerWithAddress;
   let wallet2: SignerWithAddress;
 
-  const tokenName = "Wakanda Carbon Credit";
-  const tokenSymbol = "WCO2";
+  const name = "Hash Planet";
+  const symbol = "HASH";
 
   beforeEach(async () => {
     [wallet1, wallet2] = await getSigners();
     const tokenFactory: ContractFactory = await ethers.getContractFactory(
       "MintableERC20"
     );
-    token = await tokenFactory.deploy(tokenName, tokenSymbol, wallet1);
+    token = await tokenFactory.deploy(name, symbol, wallet1);
   });
 
   describe("constructor()", () => {
     it("should initialize token", async () => {
-      expect(await token.name()).to.equal(tokenName);
-      expect(await token.symbol()).to.equal(tokenSymbol);
-      expect(await token.decimals()).to.equal(18);
+      expect(await token.name()).to.equal(name);
+      expect(await token.symbol()).to.equal(symbol);
     });
   });
   describe("decimals()", () => {
