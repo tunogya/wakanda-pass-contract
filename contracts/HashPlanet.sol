@@ -19,12 +19,7 @@ contract HashPlanet is ERC721, ERC721Enumerable, ERC721URIStorage {
 
     // The alphabet(32ghs) uses all digits 0-9 and almost all lower case letters except "a", "i", "l" and "o"
     // https://en.wikipedia.org/wiki/Geohash
-    string[32] constant alphabet = [
-    "0", "1", "2", "3", "4", "5", "6", "7",
-    "8", "9", "b", "c", "d", "e", "f", "g",
-    "h", "j", "k", "m", "n", "p", "q", "r",
-    "s", "t", "u", "v", "w", "x", "y", "z"
-    ];
+    bytes constant alphabet = "0123456789bcdefghjkmnpqrstuvwxyz";
 
     constructor(
         string memory _name,
@@ -39,18 +34,17 @@ contract HashPlanet is ERC721, ERC721Enumerable, ERC721URIStorage {
     }
 
     function init(address to) internal {
-        require(_tokenIdCounter.current() = 0, "HashPlanet/only-can-be-init-once");
-
-
-        safeMint(to, "0");
-
+        require(_tokenIdCounter.current() == 0, "HashPlanet/only-can-be-init-once");
+        for (uint8 i = 0; i < 32; i ++) {
+            safeMint(to, string(abi.encodePacked(alphabet[i])));
+        }
     }
 
     /**
      * @param to receiver address
      * @param uri geohash
      */
-    function safeMint(address to, string memory uri) public onlyRole(MINTER_ROLE) {
+    function safeMint(address to, string memory uri) internal {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);

@@ -5,7 +5,6 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./interfaces/IMintableERC20.sol";
 import "./interfaces/IRewards.sol";
 
 /**
@@ -17,7 +16,7 @@ contract Rewards is IRewards, Ownable {
     /* ============ Global Variables ============ */
 
     /// @notice Token for which the promotions are created.
-    IMintableERC20 public immutable token;
+    IERC20 public immutable token;
 
     /// @notice Period during which the promotion owner can't destroy a promotion.
     uint32 public constant GRACE_PERIOD = 365 days;
@@ -92,7 +91,7 @@ contract Rewards is IRewards, Ownable {
      * @param _token token address for which the promotions will be created
      */
     constructor(
-        IMintableERC20 _token
+        IERC20 _token
     ) {
         token = _token;
     }
@@ -216,7 +215,7 @@ contract Rewards is IRewards, Ownable {
         _claimedEpochs[_promotionId][_user] = _userClaimedEpochs;
         _promotions[_promotionId].rewardsClaimed += _promotion.tokensPerEpoch;
 
-        token.mint(_user, _promotion.tokensPerEpoch);
+        token.transfer(_user, _promotion.tokensPerEpoch);
 
         emit RewardsClaimed(_promotionId, _epochId, _user, _promotion.tokensPerEpoch);
 
