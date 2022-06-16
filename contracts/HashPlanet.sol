@@ -17,8 +17,14 @@ contract HashPlanet is ERC721, ERC721Enumerable, ERC721URIStorage {
 
     Counters.Counter private _tokenIdCounter;
 
-    string[32] constant alphabets = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "b", "c", "d", "e", "f", "g", "h",
-    "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+    // The alphabet(32ghs) uses all digits 0-9 and almost all lower case letters except "a", "i", "l" and "o"
+    // https://en.wikipedia.org/wiki/Geohash
+    string[32] constant alphabet = [
+    "0", "1", "2", "3", "4", "5", "6", "7",
+    "8", "9", "b", "c", "d", "e", "f", "g",
+    "h", "j", "k", "m", "n", "p", "q", "r",
+    "s", "t", "u", "v", "w", "x", "y", "z"
+    ];
 
     constructor(
         string memory _name,
