@@ -57,7 +57,6 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
                 newId,
                 string(abi.encodePacked(parentURI, alphabet[i]))
             );
-            newIds[i] = _tokenIdCounter.current();
         }
     }
 
