@@ -6,13 +6,14 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./interfaces/IGeohash.sol";
 
 /**
  * @title Geohash
  * @dev Geohash use geohash algorithm. Each NFT can be cut into smaller pieces
  * @author Wakanda Labs
  */
-contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
+contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -42,7 +43,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
      * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
      * @param tokenId tokenId of land which you want to divide
      */
-    function divide(uint256 tokenId) public {
+    function divide(uint256 tokenId) public returns (uint256[] memory newIds){
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Geohash: transfer caller is not owner nor approved");
         string memory parentURI = tokenURI(tokenId);
         _burn(tokenId);
@@ -51,7 +52,9 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
             _tokenIdCounter.increment();
             _safeMint(_msgSender(), newId);
             _setTokenURI(newId, string(abi.encodePacked(parentURI, alphabet[i])));
+            newIds[i] = _tokenIdCounter.current();
         }
+        emit Divide(tokenId);
     }
 
     // The following functions are overrides required by Solidity.
