@@ -64,7 +64,9 @@ interface IRewards {
      * @param _numberOfEpochs Number of epochs to add
      * @return True if the operation was successful
      */
-    function extendPromotion(uint256 _promotionId, uint8 _numberOfEpochs) external returns (bool);
+    function extendPromotion(uint256 _promotionId, uint8 _numberOfEpochs)
+        external
+        returns (bool);
 
     /**
      * @notice Claim rewards for a given promotion and epoch.
@@ -74,17 +76,19 @@ interface IRewards {
      * @param _promotionId Id of the promotion to claim rewards for
      * @return Amount of reward claimed
      */
-    function claimReward(
-        address _user,
-        uint256 _promotionId
-    ) external returns (uint256);
+    function claimReward(address _user, uint256 _promotionId)
+        external
+        returns (uint256);
 
     /**
      * @notice Get settings for a specific promotion.
      * @param _promotionId Id of the promotion to get settings for
      * @return Promotion settings
      */
-    function getPromotion(uint256 _promotionId) external view returns (Promotion memory);
+    function getPromotion(uint256 _promotionId)
+        external
+        view
+        returns (Promotion memory);
 
     /**
      * @notice Get the current epoch id of a promotion.
@@ -92,7 +96,10 @@ interface IRewards {
      * @param _promotionId Id of the promotion to get current epoch for
      * @return Current epoch id of the promotion
      */
-    function getCurrentEpochId(uint256 _promotionId) external view returns (uint256);
+    function getCurrentEpochId(uint256 _promotionId)
+        external
+        view
+        returns (uint256);
 
     /**
      * @notice Get amount of tokens to be rewarded for a given epoch.

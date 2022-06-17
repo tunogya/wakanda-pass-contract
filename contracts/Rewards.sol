@@ -50,25 +50,23 @@ contract Rewards is IRewards, Ownable {
      * @param promotionId Id of the promotion being ended
      * @param epochNumber Epoch number at which the promotion ended
      */
-    event PromotionEnded(
-        uint256 indexed promotionId,
-        uint8 epochNumber
-    );
+    event PromotionEnded(uint256 indexed promotionId, uint8 epochNumber);
 
     /**
      * @notice Emitted when a promotion is destroyed.
      * @param promotionId Id of the promotion being destroyed
      */
-    event PromotionDestroyed(
-        uint256 indexed promotionId
-    );
+    event PromotionDestroyed(uint256 indexed promotionId);
 
     /**
      * @notice Emitted when a promotion is extended.
      * @param promotionId Id of the promotion being extended
      * @param numberOfEpochs Number of epochs the promotion has been extended by
      */
-    event PromotionExtended(uint256 indexed promotionId, uint256 numberOfEpochs);
+    event PromotionExtended(
+        uint256 indexed promotionId,
+        uint256 numberOfEpochs
+    );
 
     /**
      * @notice Emitted when rewards have been claimed.
@@ -90,9 +88,7 @@ contract Rewards is IRewards, Ownable {
      * @notice Constructor of the contract.
      * @param _token token address for which the promotions will be created
      */
-    constructor(
-        IERC20 _token
-    ) {
+    constructor(IERC20 _token) {
         token = _token;
     }
 
@@ -113,12 +109,12 @@ contract Rewards is IRewards, Ownable {
         _latestPromotionId = _nextPromotionId;
 
         _promotions[_nextPromotionId] = Promotion({
-        startTimestamp : _startTimestamp,
-        numberOfEpochs : _numberOfEpochs,
-        epochDuration : _epochDuration,
-        createdAt : uint48(block.timestamp),
-        tokensPerEpoch : _tokensPerEpoch,
-        rewardsClaimed : 0
+            startTimestamp: _startTimestamp,
+            numberOfEpochs: _numberOfEpochs,
+            epochDuration: _epochDuration,
+            createdAt: uint48(block.timestamp),
+            tokensPerEpoch: _tokensPerEpoch,
+            rewardsClaimed: 0
         });
 
         emit PromotionCreated(_nextPromotionId);
@@ -128,10 +124,10 @@ contract Rewards is IRewards, Ownable {
 
     /// @inheritdoc IRewards
     function endPromotion(uint256 _promotionId)
-    external
-    override
-    onlyOwner
-    returns (bool)
+        external
+        override
+        onlyOwner
+        returns (bool)
     {
         Promotion memory _promotion = _getPromotion(_promotionId);
         _requirePromotionActive(_promotion);
@@ -146,10 +142,10 @@ contract Rewards is IRewards, Ownable {
 
     /// @inheritdoc IRewards
     function destroyPromotion(uint256 _promotionId)
-    external
-    override
-    onlyOwner
-    returns (bool)
+        external
+        override
+        onlyOwner
+        returns (bool)
     {
         Promotion memory _promotion = _getPromotion(_promotionId);
 
@@ -157,12 +153,15 @@ contract Rewards is IRewards, Ownable {
         uint256 _promotionCreatedAt = _promotion.createdAt;
 
         uint256 _gracePeriodEndTimestamp = (
-        _promotionEndTimestamp < _promotionCreatedAt
-        ? _promotionCreatedAt
-        : _promotionEndTimestamp
+            _promotionEndTimestamp < _promotionCreatedAt
+                ? _promotionCreatedAt
+                : _promotionEndTimestamp
         ) + GRACE_PERIOD;
 
-        require(block.timestamp >= _gracePeriodEndTimestamp, "Rewards/grace-period-active");
+        require(
+            block.timestamp >= _gracePeriodEndTimestamp,
+            "Rewards/grace-period-active"
+        );
 
         delete _promotions[_promotionId];
 
@@ -173,10 +172,10 @@ contract Rewards is IRewards, Ownable {
 
     /// @inheritdoc IRewards
     function extendPromotion(uint256 _promotionId, uint8 _numberOfEpochs)
-    external
-    override
-    onlyOwner
-    returns (bool)
+        external
+        override
+        onlyOwner
+        returns (bool)
     {
         _requireNumberOfEpochs(_numberOfEpochs);
 
@@ -190,7 +189,9 @@ contract Rewards is IRewards, Ownable {
             "Rewards/epochs-over-limit"
         );
 
-        _promotions[_promotionId].numberOfEpochs = _currentNumberOfEpochs + _numberOfEpochs;
+        _promotions[_promotionId].numberOfEpochs =
+            _currentNumberOfEpochs +
+            _numberOfEpochs;
 
         emit PromotionExtended(_promotionId, _numberOfEpochs);
 
@@ -198,17 +199,21 @@ contract Rewards is IRewards, Ownable {
     }
 
     /// @inheritdoc IRewards
-    function claimReward(
-        address _user,
-        uint256 _promotionId
-    ) external override returns (uint256) {
+    function claimReward(address _user, uint256 _promotionId)
+        external
+        override
+        returns (uint256)
+    {
         Promotion memory _promotion = _getPromotion(_promotionId);
 
         uint256 _userClaimedEpochs = _claimedEpochs[_promotionId][_user];
 
         uint8 _epochId = uint8(_getCurrentEpochId(_promotion));
 
-        require(!_isClaimedEpoch(_userClaimedEpochs, _epochId), "Rewards/rewards-claimed");
+        require(
+            !_isClaimedEpoch(_userClaimedEpochs, _epochId),
+            "Rewards/rewards-claimed"
+        );
 
         _userClaimedEpochs = _updateClaimedEpoch(_userClaimedEpochs, _epochId);
 
@@ -217,18 +222,33 @@ contract Rewards is IRewards, Ownable {
 
         token.transfer(_user, _promotion.tokensPerEpoch);
 
-        emit RewardsClaimed(_promotionId, _epochId, _user, _promotion.tokensPerEpoch);
+        emit RewardsClaimed(
+            _promotionId,
+            _epochId,
+            _user,
+            _promotion.tokensPerEpoch
+        );
 
         return _promotion.tokensPerEpoch;
     }
 
     /// @inheritdoc IRewards
-    function getPromotion(uint256 _promotionId) external view override returns (Promotion memory) {
+    function getPromotion(uint256 _promotionId)
+        external
+        view
+        override
+        returns (Promotion memory)
+    {
         return _getPromotion(_promotionId);
     }
 
     /// @inheritdoc IRewards
-    function getCurrentEpochId(uint256 _promotionId) external view override returns (uint256) {
+    function getCurrentEpochId(uint256 _promotionId)
+        external
+        view
+        override
+        returns (uint256)
+    {
         return _getCurrentEpochId(_getPromotion(_promotionId));
     }
 
@@ -244,7 +264,12 @@ contract Rewards is IRewards, Ownable {
         uint256[] memory _rewardsAmount = new uint256[](_epochIdsLength);
 
         for (uint256 index = 0; index < _epochIdsLength; index++) {
-            if (_isClaimedEpoch(_claimedEpochs[_promotionId][_user], _epochIds[index])) {
+            if (
+                _isClaimedEpoch(
+                    _claimedEpochs[_promotionId][_user],
+                    _epochIds[index]
+                )
+            ) {
                 _rewardsAmount[index] = 0;
             } else {
                 _rewardsAmount[index] = _promotion.tokensPerEpoch;
@@ -260,7 +285,10 @@ contract Rewards is IRewards, Ownable {
      * @notice Determine if a promotion is active.
      * @param _promotion Promotion to check
      */
-    function _requirePromotionActive(Promotion memory _promotion) internal view {
+    function _requirePromotionActive(Promotion memory _promotion)
+        internal
+        view
+    {
         require(
             _getPromotionEndTimestamp(_promotion) > block.timestamp,
             "Rewards/promotion-inactive"
@@ -281,7 +309,11 @@ contract Rewards is IRewards, Ownable {
      * @param _promotionId Promotion id to get settings for
      * @return Promotion settings
      */
-    function _getPromotion(uint256 _promotionId) internal view returns (Promotion memory) {
+    function _getPromotion(uint256 _promotionId)
+        internal
+        view
+        returns (Promotion memory)
+    {
         Promotion memory _promotion = _promotions[_promotionId];
         require(_promotion.tokensPerEpoch != 0, "Rewards/invalid-promotion");
         return _promotion;
@@ -293,14 +325,15 @@ contract Rewards is IRewards, Ownable {
      * @return Promotion end timestamp
      */
     function _getPromotionEndTimestamp(Promotion memory _promotion)
-    internal
-    pure
-    returns (uint256)
+        internal
+        pure
+        returns (uint256)
     {
-    unchecked {
-        return
-        _promotion.startTimestamp + (_promotion.epochDuration * _promotion.numberOfEpochs);
-    }
+        unchecked {
+            return
+                _promotion.startTimestamp +
+                (_promotion.epochDuration * _promotion.numberOfEpochs);
+        }
     }
 
     /**
@@ -312,15 +345,19 @@ contract Rewards is IRewards, Ownable {
      * @param _promotion Promotion to get current epoch for
      * @return Epoch id
      */
-    function _getCurrentEpochId(Promotion memory _promotion) internal view returns (uint256) {
+    function _getCurrentEpochId(Promotion memory _promotion)
+        internal
+        view
+        returns (uint256)
+    {
         uint256 _currentEpochId;
 
         if (block.timestamp > _promotion.startTimestamp) {
-        unchecked {
-            _currentEpochId =
-            (block.timestamp - _promotion.startTimestamp) /
-            _promotion.epochDuration;
-        }
+            unchecked {
+                _currentEpochId =
+                    (block.timestamp - _promotion.startTimestamp) /
+                    _promotion.epochDuration;
+            }
         }
 
         return _currentEpochId;
@@ -339,9 +376,9 @@ contract Rewards is IRewards, Ownable {
     * @return Tightly packed epoch ids with the newly boolean value set
     */
     function _updateClaimedEpoch(uint256 _userClaimedEpochs, uint8 _epochId)
-    internal
-    pure
-    returns (uint256)
+        internal
+        pure
+        returns (uint256)
     {
         return _userClaimedEpochs | (uint256(1) << _epochId);
     }
@@ -360,9 +397,9 @@ contract Rewards is IRewards, Ownable {
     * @return true if the rewards have already been claimed for the given epoch, false otherwise
      */
     function _isClaimedEpoch(uint256 _userClaimedEpochs, uint8 _epochId)
-    internal
-    pure
-    returns (bool)
+        internal
+        pure
+        returns (bool)
     {
         return (_userClaimedEpochs >> _epochId) & uint256(1) == 1;
     }

@@ -31,7 +31,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
             address(_genesis) != address(0),
             "Geohash/genesis-not-zero-address"
         );
-        for (uint8 i = 0; i < 32; i ++) {
+        for (uint8 i = 0; i < 32; i++) {
             uint256 tokenId = _tokenIdCounter.current();
             _tokenIdCounter.increment();
             _safeMint(_genesis, tokenId);
@@ -43,15 +43,21 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
      * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
      * @param tokenId tokenId of land which you want to divide
      */
-    function divide(uint256 tokenId) public returns (uint256[] memory newIds){
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "Geohash: transfer caller is not owner nor approved");
+    function divide(uint256 tokenId) public returns (uint256[] memory newIds) {
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "Geohash: transfer caller is not owner nor approved"
+        );
         string memory parentURI = tokenURI(tokenId);
         _burn(tokenId);
-        for (uint8 i = 0; i < 32; i ++) {
+        for (uint8 i = 0; i < 32; i++) {
             uint256 newId = _tokenIdCounter.current();
             _tokenIdCounter.increment();
             _safeMint(_msgSender(), newId);
-            _setTokenURI(newId, string(abi.encodePacked(parentURI, alphabet[i])));
+            _setTokenURI(
+                newId,
+                string(abi.encodePacked(parentURI, alphabet[i]))
+            );
             newIds[i] = _tokenIdCounter.current();
         }
         emit Divide(tokenId);
@@ -59,31 +65,35 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
 
     // The following functions are overrides required by Solidity.
 
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
-    internal
-    override(ERC721, ERC721Enumerable)
-    {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId)
+        internal
+        override(ERC721, ERC721URIStorage)
+    {
         super._burn(tokenId);
     }
 
     function tokenURI(uint256 tokenId)
-    public
-    view
-    override(ERC721, ERC721URIStorage)
-    returns (string memory)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
     {
         return super.tokenURI(tokenId);
     }
 
     function supportsInterface(bytes4 interfaceId)
-    public
-    view
-    override(ERC721, ERC721Enumerable)
-    returns (bool)
+        public
+        view
+        override(ERC721, ERC721Enumerable)
+        returns (bool)
     {
         return super.supportsInterface(interfaceId);
     }
