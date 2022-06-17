@@ -6,14 +6,13 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./interfaces/IGeohash.sol";
 
 /**
  * @title Geohash
  * @dev Geohash use geohash algorithm. Each NFT can be cut into smaller pieces
  * @author Wakanda Labs
  */
-contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
+contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -60,7 +59,6 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
             );
             newIds[i] = _tokenIdCounter.current();
         }
-        emit Divide(tokenId);
     }
 
     // The following functions are overrides required by Solidity.
