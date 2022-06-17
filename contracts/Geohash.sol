@@ -39,13 +39,19 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
     }
 
     /**
-     * @notice If you want to cut a piece of land
-     * this will destroy your original land and generate 32 sub-lands
-     * all of which are yours
-     * @param tokenId
+     * @notice This will destroy your original land and generate 32 sub-lands, all of which are yours
+     * @param tokenId tokenId of land which you want to division
      */
     function division(uint256 tokenId) public {
-        require(_owners[tokenId] == msg.sender, "");
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Geohash: transfer caller is not owner nor approved");
+        string memory parentURI = tokenURI(tokenId);
+        _burn(tokenId);
+        for (uint8 i = 0; i < 32; i ++) {
+            uint256 newId = _tokenIdCounter.current();
+            _tokenIdCounter.increment();
+            _safeMint(_msgSender(), newId);
+            _setTokenURI(newId, string(abi.encodePacked(parentURI, alphabet[i])));
+        }
     }
 
     // The following functions are overrides required by Solidity.
