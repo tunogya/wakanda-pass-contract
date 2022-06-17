@@ -43,7 +43,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
      * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
      * @param tokenId tokenId of land which you want to divide
      */
-    function divide(uint256 tokenId) public returns (uint256[] memory newIds) {
+    function divide(uint256 tokenId) public {
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
             "Geohash: transfer caller is not owner nor approved"
