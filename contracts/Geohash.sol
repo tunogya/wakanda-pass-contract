@@ -34,7 +34,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
             "Geohash/genesis-not-zero-address"
         );
         for (uint8 i = 0; i < 32; i++) {
-            uint256 tokenId_ = _tokenIdCounter.current();
+            uint256 tokenId_ = uint256(keccak256(abi.encodePacked(alphabet[i])));
             _tokenIdCounter.increment();
             _safeMint(genesis_, tokenId_);
             _setTokenURI(tokenId_, string(abi.encodePacked(alphabet[i])));
