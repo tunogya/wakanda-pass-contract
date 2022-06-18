@@ -21,69 +21,101 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
     // https://en.wikipedia.org/wiki/Geohash
     bytes constant alphabet = "0123456789bcdefghjkmnpqrstuvwxyz";
 
+    // token URI => tokenId
+    mapping(string => uint256) _tokenURIResolver;
+
     constructor(
-        string memory _name,
-        string memory _symbol,
-        address _genesis
-    ) ERC721(_name, _symbol) {
+        string memory name_,
+        string memory symbol_,
+        address genesis_
+    ) ERC721(name_, symbol_) {
         require(
-            address(_genesis) != address(0),
+            address(genesis_) != address(0),
             "Geohash/genesis-not-zero-address"
         );
         for (uint8 i = 0; i < 32; i++) {
-            uint256 tokenId = _tokenIdCounter.current();
+            uint256 tokenId_ = _tokenIdCounter.current();
             _tokenIdCounter.increment();
-            _safeMint(_genesis, tokenId);
-            _setTokenURI(tokenId, string(abi.encodePacked(alphabet[i])));
+            _safeMint(genesis_, tokenId_);
+            _setTokenURI(tokenId_, string(abi.encodePacked(alphabet[i])));
         }
     }
 
     /**
      * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
-     * @param tokenId tokenId of land which you want to divide
+     * @param tokenId_ tokenId of land which you want to divide
      */
-    function divide(uint256 tokenId) public {
+    function divide(uint256 tokenId_) public {
         require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
+            _isApprovedOrOwner(_msgSender(), tokenId_),
             "Geohash: transfer caller is not owner nor approved"
         );
-        string memory parentURI = tokenURI(tokenId);
-        _burn(tokenId);
+        string memory parentURI = tokenURI(tokenId_);
+        _burn(tokenId_);
+        _deleteTokenURIResolver(parentURI);
         for (uint8 i = 0; i < 32; i++) {
-            uint256 newId = _tokenIdCounter.current();
+            uint256 newId = uint256(
+                keccak256(abi.encodePacked(parentURI, alphabet[i]))
+            );
             _tokenIdCounter.increment();
             _safeMint(_msgSender(), newId);
             _setTokenURI(
                 newId,
                 string(abi.encodePacked(parentURI, alphabet[i]))
             );
+            _setTokenURIResolver(
+                newId,
+                string(abi.encodePacked(parentURI, alphabet[i]))
+            );
+        }
+    }
+
+    function tokenId(string memory tokenURI_) public view returns (uint256) {
+        uint256 tokenId_ = _tokenURIResolver[tokenURI_];
+        require(_exists(tokenId_), "Geohash: URI nonexistent token");
+        return tokenId_;
+    }
+
+    /**
+     * @notice Resolver tokenURI to tokenId
+     */
+    function _setTokenURIResolver(uint256 tokenId_, string memory tokenURI_)
+        internal
+    {
+        require(_exists(tokenId_), "Geohash: URI set of nonexistent token");
+        _tokenURIResolver[tokenURI_] = tokenId_;
+    }
+
+    function _deleteTokenURIResolver(string memory tokenURI_) internal {
+        if (_tokenURIResolver[tokenURI_] != 0) {
+            delete _tokenURIResolver[tokenURI_];
         }
     }
 
     // The following functions are overrides required by Solidity.
 
     function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
+        address from_,
+        address to_,
+        uint256 tokenId_
     ) internal override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(from, to, tokenId);
+        super._beforeTokenTransfer(from_, to_, tokenId_);
     }
 
-    function _burn(uint256 tokenId)
+    function _burn(uint256 tokenId_)
         internal
         override(ERC721, ERC721URIStorage)
     {
-        super._burn(tokenId);
+        super._burn(tokenId_);
     }
 
-    function tokenURI(uint256 tokenId)
+    function tokenURI(uint256 tokenId_)
         public
         view
         override(ERC721, ERC721URIStorage)
         returns (string memory)
     {
-        return super.tokenURI(tokenId);
+        return super.tokenURI(tokenId_);
     }
 
     function supportsInterface(bytes4 interfaceId)
