@@ -33,14 +33,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
             address(genesis_) != address(0),
             "Geohash/genesis-not-zero-address"
         );
-        for (uint8 i = 0; i < 32; i++) {
-            uint256 tokenId_ = uint256(
-                keccak256(abi.encodePacked(alphabet[i]))
-            );
-            _tokenIdCounter.increment();
-            _safeMint(genesis_, tokenId_);
-            _setTokenURI(tokenId_, string(abi.encodePacked(alphabet[i])));
-        }
+        _batchMint("");
     }
 
     /**
@@ -52,30 +45,36 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
             _isApprovedOrOwner(_msgSender(), tokenId_),
             "Geohash: transfer caller is not owner nor approved"
         );
-        string memory parentURI = tokenURI(tokenId_);
+        string memory parentURI_ = tokenURI(tokenId_);
         _burn(tokenId_);
-        _deleteTokenURIResolver(parentURI);
-        for (uint8 i = 0; i < 32; i++) {
-            uint256 newId = uint256(
-                keccak256(abi.encodePacked(parentURI, alphabet[i]))
-            );
-            _tokenIdCounter.increment();
-            _safeMint(_msgSender(), newId);
-            _setTokenURI(
-                newId,
-                string(abi.encodePacked(parentURI, alphabet[i]))
-            );
-            _setTokenURIResolver(
-                newId,
-                string(abi.encodePacked(parentURI, alphabet[i]))
-            );
-        }
+        _deleteTokenURIResolver(parentURI_);
+        _batchMint(parentURI_);
     }
 
     function tokenId(string memory tokenURI_) public view returns (uint256) {
         uint256 tokenId_ = _tokenURIResolver[tokenURI_];
         require(_exists(tokenId_), "Geohash: URI nonexistent token");
         return tokenId_;
+    }
+
+    function _batchMint(string memory parentURI_) internal {
+        require(bytes(parentURI_).length > 0 || totalSupply() == 0, "Geohash: Only init once");
+
+        for (uint8 i = 0; i < 32; i++) {
+            uint256 newId = uint256(
+                keccak256(abi.encodePacked(parentURI_, alphabet[i]))
+            );
+            _tokenIdCounter.increment();
+            _safeMint(_msgSender(), newId);
+            _setTokenURI(
+                newId,
+                string(abi.encodePacked(parentURI_, alphabet[i]))
+            );
+            _setTokenURIResolver(
+                newId,
+                string(abi.encodePacked(parentURI_, alphabet[i]))
+            );
+        }
     }
 
     /**
