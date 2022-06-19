@@ -1,4 +1,4 @@
-import { expect, should } from "chai";
+import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Contract, ContractFactory } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
