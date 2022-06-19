@@ -29,6 +29,7 @@ jobs:
         ARBITRUM_RINKEBY_URL: ${{secrets.ARBITRUM_RINKEBY_URL}}
         BSCTESTNET_URL: ${{secrets.BSCTESTNET_URL}}
         BSC_URL: ${{secrets.BSC_URL}}
+        HDWALLET_MNEMONIC: ${{secrets.HDWALLET_MNEMONIC}}
       with:
         node-version: 16
         cache: 'yarn'
