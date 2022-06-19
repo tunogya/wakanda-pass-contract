@@ -3,9 +3,17 @@
   "version": "1.0.0",
   "description": "Geohash",
   "scripts": {
+    "clean": "rm -rf cache/ artifacts/",
+    "coverage": "HIDE_DEPLOY_LOG=true OPTIMIZER_DISABLED=true hardhat coverage",
+    "docs": "solidity-docgen --solc-module solc-0.8 -i contracts -o docs -t templates",
     "format": "prettier --config .prettierrc --write \"**/*.*.{ts,js}\" \"contracts/**/*.sol\"",
     "format:file": "prettier --config .prettierrc --write",
-    "test": "hh test"
+    "test": "HIDE_DEPLOY_LOG=true hardhat test",
+    "gas": "REPORT_GAS=true HIDE_DEPLOY_LOG=true hardhat test",
+    "remove-logs": "yarn run hardhat remove-logs",
+    "parallel-test": "mocha --require hardhat/register --recursive --parallel --exit --extension ts",
+    "prepack": "yarn compile",
+    "hint": "solhint \"contracts/**/*.sol\""
   },
   "repository": {
     "type": "git",
@@ -52,6 +60,7 @@
     "prettier-plugin-solidity": "^1.0.0-beta.13",
     "solhint": "^3.3.7",
     "solidity-coverage": "^0.7.20",
+    "solidity-docgen": "^0.5.17",
     "ts-node": "^10.7.0",
     "typechain": "^5.2.0",
     "typescript": "^4.6.2"

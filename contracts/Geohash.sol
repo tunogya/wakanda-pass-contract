@@ -58,7 +58,10 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
     }
 
     function _batchMint(string memory parentURI_) internal {
-        require(bytes(parentURI_).length > 0 || totalSupply() == 0, "Geohash: Only init once");
+        require(
+            bytes(parentURI_).length > 0 || totalSupply() == 0,
+            "Geohash: Only init once"
+        );
 
         for (uint8 i = 0; i < 32; i++) {
             uint256 newId = uint256(
