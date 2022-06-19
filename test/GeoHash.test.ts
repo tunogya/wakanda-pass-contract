@@ -1,55 +1,56 @@
-import { expect } from "chai";
+import { expect, should } from "chai";
 import { ethers } from "hardhat";
-import { Contract, ContractFactory, utils } from "ethers";
+import { Contract, ContractFactory } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 const { getSigners } = ethers;
-const { parseEther: toWei } = utils;
 
-describe("TestHashPlanet", function () {
-  let token: Contract;
-  let wallet1: SignerWithAddress;
-  let wallet2: SignerWithAddress;
+describe("TestGeohash", function () {
+  let geohash: Contract;
+  let owner: SignerWithAddress;
 
-  const name = "Hash Planet";
-  const symbol = "HASH";
+  const name = "Geohash";
+  const symbol = "GEO";
 
   beforeEach(async () => {
-    [wallet1, wallet2] = await getSigners();
+    [owner] = await getSigners();
     const tokenFactory: ContractFactory = await ethers.getContractFactory(
-      "MintableERC20"
+      "Geohash"
     );
-    token = await tokenFactory.deploy(name, symbol, wallet1);
+    geohash = await tokenFactory.deploy(name, symbol, owner.address);
   });
 
   describe("constructor()", () => {
-    it("should initialize token", async () => {
-      expect(await token.name()).to.equal(name);
-      expect(await token.symbol()).to.equal(symbol);
+    it("should init name and symbol", async () => {
+      await expect(await geohash.name()).to.equal(name);
+      await expect(await geohash.symbol()).to.equal(symbol);
     });
   });
-  describe("decimals()", () => {
-    it("should return default decimals", async () => {
-      expect(await token.decimals()).to.equal(18);
-    });
-  });
-  describe("balanceOf()", () => {
-    it("should return user balance", async () => {
-      const mintBalance = toWei("1000");
 
-      await token.mint(wallet1.address, mintBalance);
-
-      expect(await token.balanceOf(wallet1.address)).to.equal(mintBalance);
-    });
-  });
   describe("totalSupply()", () => {
-    it("should return total supply of tickets", async () => {
-      const mintBalance = toWei("1000");
+    it("should have 32 genesis geohash after init", async () => {
+      await expect(await geohash.totalSupply()).to.equal(32);
+    });
+  });
 
-      await token.mint(wallet1.address, mintBalance);
-      await token.mint(wallet2.address, mintBalance);
+  describe("tokenByIndex()", () => {
+    it("geohash id should be keccak256(id)", async () => {
+      await expect(await geohash.tokenByIndex(0)).equal(
+        "1937035142596246788172577232054709726386880441279550832067530347910661804397"
+      );
+    });
+  });
 
-      expect(await token.totalSupply()).to.equal(mintBalance.mul(2));
+  describe("tokenByURI()", () => {
+    it("geohash tokenURI to tokenId", async () => {
+      await expect(await geohash.tokenByURI("0")).to.equal(
+        "1937035142596246788172577232054709726386880441279550832067530347910661804397"
+      );
+    });
+    it("geohash tokenURI don't contain a, i, l, o", async () => {
+      await expect(geohash.tokenByURI("a")).to.be.revertedWith(
+        "Geohash: URI nonexistent token"
+      );
     });
   });
 });

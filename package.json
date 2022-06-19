@@ -1,25 +1,25 @@
 {
-  "name": "carbon-trading-system",
+  "name": "geohash",
   "version": "1.0.0",
-  "description": "Wakanda Carbon Trading System",
+  "description": "Geohash",
   "scripts": {
     "format": "prettier --config .prettierrc --write \"**/*.*.{ts,js}\" \"contracts/**/*.sol\"",
-    "format:file": "prettier --config .prettierrc --write"
+    "format:file": "prettier --config .prettierrc --write",
+    "test": "hh test"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/wakandalabs/carbon-trading-system.git"
+    "url": "git+ssh://git@github.com/wakandalabs/geohash.git"
   },
   "keywords": [
-    "Carbon",
-    "Trading"
+    "geohash"
   ],
   "author": "Wakanda Labs",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wakandalabs/carbon-trading-system/issues"
+    "url": "https://github.com/wakandalabs/geohash/issues"
   },
-  "homepage": "https://github.com/wakandalabs/carbon-trading-system#readme",
+  "homepage": "https://github.com/wakandalabs/geohash#readme",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
     "@nomiclabs/hardhat-etherscan": "^3.0.3",
