@@ -6,7 +6,7 @@ At the beginning of the project, the total circulation was only 32 NFTs, and the
 
 ## development path
 
-- [x] geohash main contract
+- [x] geohash core contract
 - [ ] geohash web interface
 - [ ] access map
 - [ ] provide media embedding services, which can be used as advertising window for owners
