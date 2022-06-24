@@ -21,9 +21,6 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
     // https://en.wikipedia.org/wiki/Geohash
     bytes constant alphabet = "0123456789bcdefghjkmnpqrstuvwxyz";
 
-    // token URI => tokenId
-    mapping(string => uint256) _tokenURIResolver;
-
     constructor(
         string memory name_,
         string memory symbol_
@@ -42,12 +39,13 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
         );
         string memory parentURI_ = tokenURI(tokenId_);
         _burn(tokenId_);
-        _deleteTokenURIResolver(parentURI_);
         _batchMint(parentURI_);
     }
 
     function tokenByURI(string memory tokenURI_) public view returns (uint256) {
-        uint256 tokenId_ = _tokenURIResolver[tokenURI_];
+        uint256 tokenId_ = uint256(
+            keccak256(abi.encode(tokenURI_))
+        );
         require(_exists(tokenId_), "Geohash: URI nonexistent token");
         return tokenId_;
     }
@@ -68,26 +66,6 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
                 newId,
                 string(abi.encodePacked(parentURI_, alphabet[i]))
             );
-            _setTokenURIResolver(
-                newId,
-                string(abi.encodePacked(parentURI_, alphabet[i]))
-            );
-        }
-    }
-
-    /**
-     * @notice Resolver tokenURI to tokenId
-     */
-    function _setTokenURIResolver(uint256 tokenId_, string memory tokenURI_)
-        internal
-    {
-        require(_exists(tokenId_), "Geohash: URI set of nonexistent token");
-        _tokenURIResolver[tokenURI_] = tokenId_;
-    }
-
-    function _deleteTokenURIResolver(string memory tokenURI_) internal {
-        if (_tokenURIResolver[tokenURI_] != 0) {
-            delete _tokenURIResolver[tokenURI_];
         }
     }
 
