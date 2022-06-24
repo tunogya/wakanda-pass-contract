@@ -26,13 +26,8 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
 
     constructor(
         string memory name_,
-        string memory symbol_,
-        address genesis_
+        string memory symbol_
     ) ERC721(name_, symbol_) {
-        require(
-            address(genesis_) != address(0),
-            "Geohash/genesis-not-zero-address"
-        );
         _batchMint("");
     }
 
