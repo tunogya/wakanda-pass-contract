@@ -58,7 +58,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
             "Geohash: Only init once"
         );
 
-        for (uint8 i = 0; i < 32; i++) {
+        for (uint8 i = 0; i < alphabet.length; i++) {
             uint256 newId = uint256(
                 keccak256(abi.encodePacked(parentURI_, alphabet[i]))
             );
