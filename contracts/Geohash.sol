@@ -42,12 +42,17 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
         _batchMint(parentURI_);
     }
 
-    function tokenByURI(string memory tokenURI_) public view returns (uint256) {
-        uint256 tokenId_ = uint256(
+    /**
+     * @notice Query tokenId by tokenURI
+     * @param tokenURI_ tokenURI you want to query
+     * @return tokenId_ the query token's id which is not necessarily 100% valid
+     * @return exists_ if the query token is exist, return true
+     */
+    function tokenByURI(string memory tokenURI_) public view returns (uint256 tokenId_, bool exists_) {
+        tokenId_ = uint256(
             keccak256(abi.encode(tokenURI_))
         );
-        require(_exists(tokenId_), "Geohash: URI nonexistent token");
-        return tokenId_;
+        exists_ = _exists(tokenId_);
     }
 
     function _batchMint(string memory parentURI_) internal {
