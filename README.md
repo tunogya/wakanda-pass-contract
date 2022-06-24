@@ -13,15 +13,15 @@ We aim to give everyone in the world an opportunity to become a member.
 | 0     | 0        | keccak256(0)   |
 | 1     | 1        | keccak256(1)   | 
 | ...   | ...      | keccak256(...) |
-| z     | z        | keccak256(z)   |
-| 00    | 00       | keccak256(00)  |
-| 01    | 01       | keccak256(01)  |
+| 31    | z        | keccak256(z)   |
+| 32    | 00       | keccak256(00)  |
+| 33    | 01       | keccak256(01)  |
 | ...   | ...      | keccak256(...) |
-| zz    | zz       | keccak256(zz)  |
-| 000   | 000      | keccak256(000) |
-| 001   | 001      | keccak256(001) |
+| 1023  | zz       | keccak256(zz)  |
+| 1024  | 000      | keccak256(000) |
+| 1025  | 001      | keccak256(001) |
 | ...   | ...      | keccak256(...) |
-| zzz   | zzz      | keccak256(zzz) |
+| 32767 | zzz      | keccak256(zzz) |
 | ...   | ...      | keccak256(...) |
 
 ## development path
