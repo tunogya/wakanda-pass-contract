@@ -19,8 +19,6 @@ describe("TestGeohash", function () {
     it("should init name and symbol", async () => {
       await expect(await geohash.name()).to.equal(name);
       await expect(await geohash.symbol()).to.equal(symbol);
-      console.log(await geohash.tokenByIndex(0));
-      console.log((await geohash.tokenByURI("0")).tokenId_);
     });
   });
 

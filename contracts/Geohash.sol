@@ -46,6 +46,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
 
     /**
      * @notice Query tokenId by tokenURI
+     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
      * @param tokenURI_ tokenURI you want to query
      * @return tokenId_ the query token's id which is not necessarily 100% valid
      * @return exists_ if the query token is exist, return true
@@ -59,6 +60,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
 
     /**
      * @notice Batch mint by parentURI
+     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
      * @param parentURI_ all URI was build by alphabet
      */
     function _batchMint(string memory parentURI_) internal {
