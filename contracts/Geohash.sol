@@ -55,12 +55,11 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
         exists_ = _exists(tokenId_);
     }
 
+    /**
+     * @notice Batch mint by parentURI
+     * @param parentURI_ all URI was build by alphabet
+     */
     function _batchMint(string memory parentURI_) internal {
-        require(
-            bytes(parentURI_).length > 0 || totalSupply() == 0,
-            "Geohash: Only init once"
-        );
-
         for (uint8 i = 0; i < alphabet.length; i++) {
             uint256 newId = uint256(
                 keccak256(abi.encodePacked(parentURI_, alphabet[i]))
