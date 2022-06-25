@@ -64,7 +64,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
      * @param parentURI_ all URI was build by alphabet
      */
     function _batchMint(string memory parentURI_) internal {
-        for (uint8 i = 0; i < alphabet.length; i++) {
+        for (uint8 i = 0; i < 32; i++) {
             uint256 newId = uint256(
                 keccak256(abi.encodePacked(parentURI_, alphabet[i]))
             );
