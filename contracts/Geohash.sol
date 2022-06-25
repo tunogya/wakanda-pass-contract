@@ -7,12 +7,14 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+import "./interfaces/IGeohash.sol";
+
 /**
  * @title Geohash
  * @dev Geohash use geohash algorithm. Each NFT can be cut into smaller pieces
  * @author Wakanda Labs
  */
-contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
+contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -32,7 +34,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
      * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
      * @param tokenId_ tokenId of land which you want to divide
      */
-    function divide(uint256 tokenId_) public {
+    function divide(uint256 tokenId_) external {
         require(
             _isApprovedOrOwner(_msgSender(), tokenId_),
             "Geohash: transfer caller is not owner nor approved"
@@ -48,7 +50,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage {
      * @return tokenId_ the query token's id which is not necessarily 100% valid
      * @return exists_ if the query token is exist, return true
      */
-    function tokenByURI(string memory tokenURI_) public view returns (uint256 tokenId_, bool exists_) {
+    function tokenByURI(string memory tokenURI_) external view returns (uint256 tokenId_, bool exists_) {
         tokenId_ = uint256(
             keccak256(abi.encode(tokenURI_))
         );
