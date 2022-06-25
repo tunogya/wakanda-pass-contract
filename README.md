@@ -24,6 +24,12 @@ We aim to give everyone in the world an opportunity to become a member.
 | 32767 | zzz      | keccak256(zzz) |
 | ...   | ...      | keccak256(...) |
 
+## deployment
+
+| network | contract | contract address                           |
+|---------|----------|--------------------------------------------|
+| rinkeby | Geohash  | 0xf51c774f35f0feafc75f9fcae71d9b7a1625686a |
+
 ## development path
 
 - [x] geohash core contract
