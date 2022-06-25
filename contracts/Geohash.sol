@@ -21,7 +21,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
 
     // The alphabet(32ghs) uses all digits 0-9 and almost all lower case letters except "a", "i", "l" and "o"
     // https://en.wikipedia.org/wiki/Geohash
-    bytes constant alphabet = "0123456789bcdefghjkmnpqrstuvwxyz";
+    bytes32 constant alphabet = "0123456789bcdefghjkmnpqrstuvwxyz";
 
     constructor(
         string memory name_,
