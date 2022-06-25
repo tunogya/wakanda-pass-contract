@@ -52,7 +52,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
      */
     function tokenByURI(string memory tokenURI_) external view returns (uint256 tokenId_, bool exists_) {
         tokenId_ = uint256(
-            keccak256(abi.encode(tokenURI_))
+            keccak256(abi.encodePacked(tokenURI_))
         );
         exists_ = _exists(tokenId_);
     }
