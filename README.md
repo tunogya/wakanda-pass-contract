@@ -28,7 +28,7 @@ We aim to give everyone in the world an opportunity to become a member.
 
 | network | contract | contract address                           |
 |---------|----------|--------------------------------------------|
-| rinkeby | Geohash  | 0xf51c774f35f0feafc75f9fcae71d9b7a1625686a |
+| rinkeby | Geohash  | 0x863a31036c9cd2d82da29eb34Ba4422C3B2FF51F |
 
 ## development path
 
