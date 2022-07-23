@@ -98,7 +98,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
             _isApprovedOrOwner(address(this), tokenId_),
             "Geohash: this token is not ownable or approved by the contract"
         );
-        safeTransferFrom(ownerOf(tokenId_), _msgSender(), tokenId_);
+        safeTransferFrom(address(this), _msgSender(), tokenId_);
     }
 
     // The following functions are overrides required by Solidity.
