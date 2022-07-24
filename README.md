@@ -28,9 +28,9 @@ We aim to give everyone in the world an opportunity to become a member.
 
 | network | contract | contract address                           |
 |---------|----------|--------------------------------------------|
-| rinkeby | Geohash  | 0x863a31036c9cd2d82da29eb34Ba4422C3B2FF51F |
-| mumbai  | Geohash  | 0x188cE78bcE46C958Bb287e0A57f5B68C4cC9632a |                                      |
-| goerli  | Geohash  | 0xc0166C4F87892ac435444730144C949Acd3F642D |                                          |
+| rinkeby | Geohash  | 0xbEf929f1374138035cc86BFe03090c3bb74fF917 |
+| mumbai  | Geohash  | 0x049bAA72323d1b455Ac38AA09158D140cba6baf3 |
+| goerli  | Geohash  | 0x39EfBfAa12d95082a927b55951565656848F1515 |
 
 ## development path
 
