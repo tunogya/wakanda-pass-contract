@@ -21,7 +21,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
 
     // The alphabet(32ghs) uses all digits 0-9 and almost all lower case letters except "a", "i", "l" and "o"
     // https://en.wikipedia.org/wiki/Geohash
-    bytes32 constant alphabet = "0123456789bcdefghjkmnpqrstuvwxyz";
+    bytes32 public constant ALPHABET = "0123456789bcdefghjkmnpqrstuvwxyz";
 
     constructor(
         string memory name_,
@@ -66,13 +66,13 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
     function _batchMint(string memory origin) internal {
         for (uint8 i = 0; i < 32; i++) {
             uint256 newId = uint256(
-                keccak256(abi.encodePacked(origin, alphabet[i]))
+                keccak256(abi.encodePacked(origin, ALPHABET[i]))
             );
             _tokenIdCounter.increment();
             _safeMint(_msgSender(), newId);
             _setTokenURI(
                 newId,
-                string(abi.encodePacked(origin, alphabet[i]))
+                string(abi.encodePacked(origin, ALPHABET[i]))
             );
         }
     }

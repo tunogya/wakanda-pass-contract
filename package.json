@@ -12,7 +12,7 @@
     "gas": "REPORT_GAS=true HIDE_DEPLOY_LOG=true hardhat test",
     "remove-logs": "yarn run hardhat remove-logs",
     "parallel-test": "mocha --require hardhat/register --recursive --parallel --exit --extension ts",
-    "prepack": "yarn compile",
+    "prepack": "hh compile",
     "hint": "solhint \"contracts/**/*.sol\""
   },
   "repository": {

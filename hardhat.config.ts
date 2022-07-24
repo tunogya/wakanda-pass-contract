@@ -96,6 +96,10 @@ const config: HardhatUserConfig = {
       polygonMumbai: process.env.POLYGONSCAN_API_KEY,
     },
   },
+  mocha: {
+    timeout: 4000,
+    parallel: true,
+  },
 };
 
 export default config;
