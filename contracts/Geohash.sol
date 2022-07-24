@@ -77,30 +77,6 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
         }
     }
 
-    /**
-     * @notice renounce a geohash ownership, and it will be approved for contract
-     * @param tokenId_ tokenId you want to renounce ownership
-     */
-    function renounce(uint256 tokenId_) external {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId_),
-            "Geohash: transfer caller is not owner nor approved"
-        );
-        approve(address(this), tokenId_);
-    }
-
-    /**
-     * @notice claim a geohash ownership from contract
-     * @param tokenId_ tokenId you want to transfer ownership
-     */
-    function claim(uint256 tokenId_) external {
-        require(
-            _isApprovedOrOwner(address(this), tokenId_),
-            "Geohash: this token is not ownable or approved by the contract"
-        );
-        safeTransferFrom(ownerOf(tokenId_), _msgSender(), tokenId_);
-    }
-
     // The following functions are overrides required by Solidity.
 
     function _beforeTokenTransfer(
@@ -112,26 +88,26 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
     }
 
     function _burn(uint256 tokenId_)
-    internal
-    override(ERC721, ERC721URIStorage)
+        internal
+        override(ERC721, ERC721URIStorage)
     {
         super._burn(tokenId_);
     }
 
     function tokenURI(uint256 tokenId_)
-    public
-    view
-    override(ERC721, ERC721URIStorage)
-    returns (string memory)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
     {
         return super.tokenURI(tokenId_);
     }
 
     function supportsInterface(bytes4 interfaceId)
-    public
-    view
-    override(ERC721, ERC721Enumerable)
-    returns (bool)
+        public
+        view
+        override(ERC721, ERC721Enumerable)
+        returns (bool)
     {
         return super.supportsInterface(interfaceId);
     }

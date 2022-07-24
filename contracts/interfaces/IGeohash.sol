@@ -16,16 +16,4 @@ interface IGeohash {
      * @return exists_ if the query token is exist, return true
      */
     function tokenByURI(string memory tokenURI_) external view returns (uint256 tokenId_, bool exists_);
-
-    /**
-     * @notice renounce a geohash ownership, and it will be approved for contract
-     * @param tokenId_ tokenId you want to renounce ownership
-     */
-    function renounce(uint256 tokenId_) external;
-
-    /**
-     * @notice claim a geohash ownership from contract
-     * @param tokenId_ tokenId you want to transfer ownership
-     */
-    function claim(uint256 tokenId_) external;
 }
