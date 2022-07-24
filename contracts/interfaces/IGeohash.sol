@@ -16,4 +16,16 @@ interface IGeohash {
      * @return exists_ if the query token is exist, return true
      */
     function tokenByURI(string memory tokenURI_) external view returns (uint256 tokenId_, bool exists_);
+
+    /**
+     * @notice Claim a token from No Man's Land
+     * @param tokenId_ tokenId you want to claim
+     */
+    function claim(uint256 tokenId_) external;
+
+    /**
+     * @notice
+     * @param tokenId_ tokenId you want to renounce
+     */
+    function renounce(uint256 tokenId_) external;
 }

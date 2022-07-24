@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import {Contract, ContractFactory} from "ethers";
+import { Contract, ContractFactory } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 describe("TestGeohash", function () {
@@ -48,10 +48,19 @@ describe("TestGeohash", function () {
       );
       await expect(exists).to.equal(true);
     });
-    // it("geohash tokenURI don't contain a, i, l, o", async () => {
-    //   await expect(geohash.tokenByURI("a")).to.be.revertedWith(
-    //     "Geohash: URI nonexistent token"
-    //   );
-    // });
+  });
+
+  describe("renounce()", () => {
+    it("should renounce tokenId 0", async () => {
+      const AliceGeohash = geohash.connect(Alice);
+      const BobGeohash = geohash.connect(Bob);
+      const tokenId0 = await geohash.tokenByIndex(0);
+      await AliceGeohash.renounce(tokenId0);
+      await expect(await geohash.balanceOf(Alice.address)).to.equal(31);
+      await expect(await geohash.balanceOf(geohash.address)).to.equal(1);
+      await BobGeohash.claim(tokenId0);
+      await expect(await geohash.balanceOf(geohash.address)).to.equal(0);
+      await expect(await geohash.balanceOf(Bob.address)).to.equal(1);
+    });
   });
 });

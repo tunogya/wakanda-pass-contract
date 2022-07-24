@@ -3,6 +3,7 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -14,7 +15,7 @@ import "./interfaces/IGeohash.sol";
  * @dev Geohash use geohash algorithm. Each NFT can be cut into smaller pieces
  * @author Wakanda Labs
  */
-contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
+contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC721Receiver {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -77,6 +78,22 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
         }
     }
 
+    /**
+     * @notice
+     * @param tokenId_ tokenId you want to renounce
+     */
+    function renounce(uint256 tokenId_) external {
+        safeTransferFrom(_msgSender(), address(this), tokenId_);
+    }
+
+    /**
+     * @notice Claim a token from No Man's Land
+     * @param tokenId_ tokenId you want to claim
+     */
+    function claim(uint256 tokenId_) external {
+        _transfer(address(this), _msgSender(), tokenId_);
+    }
+
     // The following functions are overrides required by Solidity.
 
     function _beforeTokenTransfer(
@@ -88,27 +105,36 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
     }
 
     function _burn(uint256 tokenId_)
-        internal
-        override(ERC721, ERC721URIStorage)
+    internal
+    override(ERC721, ERC721URIStorage)
     {
         super._burn(tokenId_);
     }
 
     function tokenURI(uint256 tokenId_)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
+    public
+    view
+    override(ERC721, ERC721URIStorage)
+    returns (string memory)
     {
         return super.tokenURI(tokenId_);
     }
 
     function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721, ERC721Enumerable)
-        returns (bool)
+    public
+    view
+    override(ERC721, ERC721Enumerable)
+    returns (bool)
     {
         return super.supportsInterface(interfaceId);
+    }
+
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4) {
+        return this.onERC721Received.selector;
     }
 }
