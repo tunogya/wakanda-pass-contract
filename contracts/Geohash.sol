@@ -46,6 +46,23 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
     }
 
     /**
+     * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
+     * @param tokenURI_ tokenId of land which you want to divide
+     */
+    function divideByURI(string memory tokenURI_) external {
+        uint256 tokenId_ = uint256(
+            keccak256(abi.encodePacked(tokenURI_))
+        );
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId_),
+            "Geohash: transfer caller is not owner nor approved"
+        );
+        string memory parentURI_ = tokenURI(tokenId_);
+        _burn(tokenId_);
+        _batchMint(parentURI_, _msgSender());
+    }
+
+    /**
      * @notice Query tokenId by tokenURI
      * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
      * @param tokenURI_ tokenURI you want to query
@@ -88,10 +105,32 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
     }
 
     /**
+     * @notice Renounce the ownership of the token
+     * @param tokenURI_ tokenURI you want to renounce
+     */
+    function renounceByURI(string memory tokenURI_) external {
+        uint256 tokenId_ = uint256(
+            keccak256(abi.encodePacked(tokenURI_))
+        );
+        safeTransferFrom(_msgSender(), address(this), tokenId_);
+    }
+
+    /**
      * @notice Claim a token from No Man's Land
      * @param tokenId_ tokenId you want to claim
      */
     function claim(uint256 tokenId_) external {
+        _transfer(address(this), _msgSender(), tokenId_);
+    }
+
+    /**
+     * @notice Claim a token from No Man's Land
+     * @param tokenURI_ tokenURI you want to claim
+     */
+    function claimByURI(string memory tokenURI_) external {
+        uint256 tokenId_ = uint256(
+            keccak256(abi.encodePacked(tokenURI_))
+        );
         _transfer(address(this), _msgSender(), tokenId_);
     }
 
