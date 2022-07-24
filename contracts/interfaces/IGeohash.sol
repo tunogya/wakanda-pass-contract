@@ -21,7 +21,10 @@ interface IGeohash {
      * @return tokenId_ the query token's id which is not necessarily 100% valid
      * @return exist_ if the query token is exist, return true
      */
-    function tokenByURI(string memory tokenURI_) external view returns (uint256 tokenId_, bool exist_);
+    function tokenByURI(string memory tokenURI_)
+        external
+        view
+        returns (uint256 tokenId_, bool exist_);
 
     /**
      * @notice Renounce the ownership of the token

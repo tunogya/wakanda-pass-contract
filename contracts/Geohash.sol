@@ -15,7 +15,13 @@ import "./interfaces/IGeohash.sol";
  * @dev Geohash use geohash algorithm. Each NFT can be cut into smaller pieces
  * @author Wakanda Labs
  */
-contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC721Receiver {
+contract Geohash is
+    ERC721,
+    ERC721Enumerable,
+    ERC721URIStorage,
+    IGeohash,
+    IERC721Receiver
+{
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -24,10 +30,9 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
     // https://en.wikipedia.org/wiki/Geohash
     bytes32 private constant ALPHABET = "0123456789bcdefghjkmnpqrstuvwxyz";
 
-    constructor(
-        string memory name_,
-        string memory symbol_
-    ) ERC721(name_, symbol_) {
+    constructor(string memory name_, string memory symbol_)
+        ERC721(name_, symbol_)
+    {
         _batchMint("", address(this));
     }
 
@@ -50,9 +55,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
      * @param tokenURI_ tokenId of land which you want to divide
      */
     function divideByURI(string memory tokenURI_) external {
-        uint256 tokenId_ = uint256(
-            keccak256(abi.encodePacked(tokenURI_))
-        );
+        uint256 tokenId_ = uint256(keccak256(abi.encodePacked(tokenURI_)));
         require(
             _isApprovedOrOwner(_msgSender(), tokenId_),
             "Geohash: transfer caller is not owner nor approved"
@@ -69,7 +72,11 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
      * @return tokenId_ the query token's id which is not necessarily 100% valid
      * @return exist_ if the query token is exist, return true
      */
-    function tokenByURI(string memory tokenURI_) external view returns (uint256 tokenId_, bool exist_) {
+    function tokenByURI(string memory tokenURI_)
+        external
+        view
+        returns (uint256 tokenId_, bool exist_)
+    {
         (tokenId_, exist_) = _tokenByURI(tokenURI_);
     }
 
@@ -80,10 +87,12 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
      * @return tokenId_ the query token's id which is not necessarily 100% valid
      * @return exist_ if the query token is exist, return true
      */
-    function _tokenByURI(string memory tokenURI_) internal view returns (uint256 tokenId_, bool exist_) {
-        tokenId_ = uint256(
-            keccak256(abi.encodePacked(tokenURI_))
-        );
+    function _tokenByURI(string memory tokenURI_)
+        internal
+        view
+        returns (uint256 tokenId_, bool exist_)
+    {
+        tokenId_ = uint256(keccak256(abi.encodePacked(tokenURI_)));
         exist_ = _exists(tokenId_);
     }
 
@@ -100,10 +109,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
             );
             _tokenIdCounter.increment();
             _safeMint(to, newId);
-            _setTokenURI(
-                newId,
-                string(abi.encodePacked(origin, ALPHABET[i]))
-            );
+            _setTokenURI(newId, string(abi.encodePacked(origin, ALPHABET[i])));
         }
     }
 
@@ -120,7 +126,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
      * @param tokenURI_ tokenURI you want to renounce
      */
     function renounceByURI(string memory tokenURI_) external {
-        (uint256 tokenId_,) = _tokenByURI(tokenURI_);
+        (uint256 tokenId_, ) = _tokenByURI(tokenURI_);
         safeTransferFrom(_msgSender(), address(this), tokenId_);
     }
 
@@ -154,26 +160,26 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
     }
 
     function _burn(uint256 tokenId_)
-    internal
-    override(ERC721, ERC721URIStorage)
+        internal
+        override(ERC721, ERC721URIStorage)
     {
         super._burn(tokenId_);
     }
 
     function tokenURI(uint256 tokenId_)
-    public
-    view
-    override(ERC721, ERC721URIStorage)
-    returns (string memory)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
     {
         return super.tokenURI(tokenId_);
     }
 
     function supportsInterface(bytes4 interfaceId)
-    public
-    view
-    override(ERC721, ERC721Enumerable)
-    returns (bool)
+        public
+        view
+        override(ERC721, ERC721Enumerable)
+        returns (bool)
     {
         return super.supportsInterface(interfaceId);
     }
