@@ -67,13 +67,24 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
      * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
      * @param tokenURI_ tokenURI you want to query
      * @return tokenId_ the query token's id which is not necessarily 100% valid
-     * @return exists_ if the query token is exist, return true
+     * @return exist_ if the query token is exist, return true
      */
-    function tokenByURI(string memory tokenURI_) external view returns (uint256 tokenId_, bool exists_) {
+    function tokenByURI(string memory tokenURI_) external view returns (uint256 tokenId_, bool exist_) {
+        (tokenId_, exist_) = _tokenByURI(tokenURI_);
+    }
+
+    /**
+     * @notice Query tokenId by tokenURI
+     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
+     * @param tokenURI_ tokenURI you want to query
+     * @return tokenId_ the query token's id which is not necessarily 100% valid
+     * @return exist_ if the query token is exist, return true
+     */
+    function _tokenByURI(string memory tokenURI_) internal view returns (uint256 tokenId_, bool exist_) {
         tokenId_ = uint256(
             keccak256(abi.encodePacked(tokenURI_))
         );
-        exists_ = _exists(tokenId_);
+        exist_ = _exists(tokenId_);
     }
 
     /**
@@ -109,9 +120,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
      * @param tokenURI_ tokenURI you want to renounce
      */
     function renounceByURI(string memory tokenURI_) external {
-        uint256 tokenId_ = uint256(
-            keccak256(abi.encodePacked(tokenURI_))
-        );
+        (uint256 tokenId_,) = _tokenByURI(tokenURI_);
         safeTransferFrom(_msgSender(), address(this), tokenId_);
     }
 
@@ -120,6 +129,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
      * @param tokenId_ tokenId you want to claim
      */
     function claim(uint256 tokenId_) external {
+        require(_exists(tokenId_), "Geohash: tokenURI does not exist");
         _transfer(address(this), _msgSender(), tokenId_);
     }
 
@@ -128,9 +138,8 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
      * @param tokenURI_ tokenURI you want to claim
      */
     function claimByURI(string memory tokenURI_) external {
-        uint256 tokenId_ = uint256(
-            keccak256(abi.encodePacked(tokenURI_))
-        );
+        (uint256 tokenId_, bool exist_) = _tokenByURI(tokenURI_);
+        require(exist_, "Geohash: tokenURI does not exist");
         _transfer(address(this), _msgSender(), tokenId_);
     }
 
