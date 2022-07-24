@@ -86,7 +86,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
             _isApprovedOrOwner(_msgSender(), tokenId_),
             "Geohash: transfer caller is not owner nor approved"
         );
-        safeTransferFrom(_msgSender(), address(this), tokenId_);
+        approve(address(this), tokenId_);
     }
 
     /**
@@ -94,6 +94,10 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash {
      * @param tokenId_ tokenId you want to transfer ownership
      */
     function claim(uint256 tokenId_) external {
+        require(
+            _isApprovedOrOwner(address(this), tokenId_),
+            "Geohash: this token is not ownable or approved by the contract"
+        );
         safeTransferFrom(address(this), _msgSender(), tokenId_);
     }
 
