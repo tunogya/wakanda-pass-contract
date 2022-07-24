@@ -24,7 +24,7 @@ interface IGeohash {
     function claim(uint256 tokenId_) external;
 
     /**
-     * @notice
+     * @notice Renounce the ownership of the token
      * @param tokenId_ tokenId you want to renounce
      */
     function renounce(uint256 tokenId_) external;

@@ -28,7 +28,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
         string memory name_,
         string memory symbol_
     ) ERC721(name_, symbol_) {
-        _batchMint("");
+        _batchMint("", address(this));
     }
 
     /**
@@ -42,7 +42,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
         );
         string memory parentURI_ = tokenURI(tokenId_);
         _burn(tokenId_);
-        _batchMint(parentURI_);
+        _batchMint(parentURI_, _msgSender());
     }
 
     /**
@@ -63,14 +63,15 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
      * @notice Batch mint by origin
      * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
      * @param origin all URI was build by alphabet
+     * @param to address of the owner of the sub-lands
      */
-    function _batchMint(string memory origin) internal {
+    function _batchMint(string memory origin, address to) internal {
         for (uint8 i = 0; i < 32; i++) {
             uint256 newId = uint256(
                 keccak256(abi.encodePacked(origin, ALPHABET[i]))
             );
             _tokenIdCounter.increment();
-            _safeMint(_msgSender(), newId);
+            _safeMint(to, newId);
             _setTokenURI(
                 newId,
                 string(abi.encodePacked(origin, ALPHABET[i]))
@@ -79,7 +80,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
     }
 
     /**
-     * @notice
+     * @notice Renounce the ownership of the token
      * @param tokenId_ tokenId you want to renounce
      */
     function renounce(uint256 tokenId_) external {
@@ -134,7 +135,7 @@ contract Geohash is ERC721, ERC721Enumerable, ERC721URIStorage, IGeohash, IERC72
         address from,
         uint256 tokenId,
         bytes calldata data
-    ) external returns (bytes4) {
+    ) external pure returns (bytes4) {
         return this.onERC721Received.selector;
     }
 }
