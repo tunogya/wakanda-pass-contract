@@ -6,13 +6,12 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 describe("TestGeohash", function () {
   let geohash: Contract;
   let Alice: SignerWithAddress;
-  let Bob: SignerWithAddress;
 
   const name = "Geohash";
   const symbol = "GEO";
 
   beforeEach(async () => {
-    [Alice, Bob] = await ethers.getSigners();
+    [Alice] = await ethers.getSigners();
     const tokenFactory: ContractFactory = await ethers.getContractFactory(
       "Geohash"
     );
@@ -56,6 +55,8 @@ describe("TestGeohash", function () {
       const tokenId0 = await geohash.tokenByIndex(0);
       await AliceGeohash.claim(tokenId0);
       expect(await geohash.balanceOf(Alice.address)).to.equal(1);
+      await AliceGeohash.claimByURI("1");
+      expect(await geohash.balanceOf(Alice.address)).to.equal(2);
     });
   });
 });
