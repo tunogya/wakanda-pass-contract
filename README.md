@@ -28,7 +28,7 @@ We aim to give everyone in the world an opportunity to become a member.
 
 | network | contract | contract address                           |
 |---------|----------|--------------------------------------------|
-| goerli  | Geohash  | 0xF82E395308aEb63Ae8A02cd3148D459B35Ba2ef1 |
+| goerli  | Geohash  | 0x35637CeE1b8f4f4C7a1c74f2d25B66C008aB2d63 |
 
 ## development path
 
