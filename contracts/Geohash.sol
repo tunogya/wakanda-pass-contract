@@ -11,10 +11,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "./interfaces/IGeohash.sol";
 
 /**
- * @title Geohash
- * @dev Geohash use geohash algorithm. Each NFT can be cut into smaller pieces
- * @author Wakanda Labs
- */
+* @title Geohash
+* @dev Geohash use geohash algorithm. Each NFT can be cut into smaller pieces
+* @author Wakanda Labs
+*/
 contract Geohash is
     ERC721,
     ERC721Enumerable,
@@ -37,41 +37,29 @@ contract Geohash is
     }
 
     /**
-     * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
-     * @param tokenId tokenId of land which you want to divide
-     */
+    * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
+    * @param tokenId tokenId of land which you want to divide
+    */
     function divide(uint256 tokenId) external {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "Geohash: transfer caller is not owner nor approved"
-        );
-        string memory parentURI_ = tokenURI(tokenId);
-        _burn(tokenId);
-        _batchMint(parentURI_, _msgSender());
+       _divide(tokenId);
     }
 
     /**
-     * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
-     * @param tokenURI_ tokenId of land which you want to divide
-     */
+    * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
+    * @param tokenURI_ tokenId of land which you want to divide
+    */
     function divideByURI(string memory tokenURI_) external {
         uint256 tokenId = uint256(keccak256(abi.encodePacked(tokenURI_)));
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId),
-            "Geohash: transfer caller is not owner nor approved"
-        );
-        string memory parentURI_ = tokenURI(tokenId);
-        _burn(tokenId);
-        _batchMint(parentURI_, _msgSender());
+        _divide(tokenId);
     }
 
     /**
-     * @notice Query tokenId by tokenURI
-     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
-     * @param tokenURI_ tokenURI you want to query
-     * @return tokenId the query token's id which is not necessarily 100% valid
-     * @return exist if the query token is exist, return true
-     */
+    * @notice Query tokenId by tokenURI
+    * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
+    * @param tokenURI_ tokenURI you want to query
+    * @return tokenId the query token's id which is not necessarily 100% valid
+    * @return exist if the query token is exist, return true
+    */
     function tokenByURI(string memory tokenURI_)
         external
         view
@@ -81,12 +69,12 @@ contract Geohash is
     }
 
     /**
-     * @notice Query tokenId by tokenURI
-     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
-     * @param tokenURI_ tokenURI you want to query
-     * @return tokenId the query token's id which is not necessarily 100% valid
-     * @return exist if the query token is exist, return true
-     */
+    * @notice Query tokenId by tokenURI
+    * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
+    * @param tokenURI_ tokenURI you want to query
+    * @return tokenId the query token's id which is not necessarily 100% valid
+    * @return exist if the query token is exist, return true
+    */
     function _tokenByURI(string memory tokenURI_)
         internal
         view
@@ -96,12 +84,22 @@ contract Geohash is
         exist = _exists(tokenId);
     }
 
+    function _divide(uint256 tokenId) internal {
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "Geohash: transfer caller is not owner nor approved"
+        );
+        string memory parentURI_ = _tokenURI(tokenId);
+        _burn(tokenId);
+        _batchMint(parentURI_, _msgSender());
+    }
+
     /**
-     * @notice Batch mint by origin
-     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
-     * @param origin all URI was build by alphabet
-     * @param to address of the owner of the sub-lands
-     */
+    * @notice Batch mint by origin
+    * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
+    * @param origin all URI was build by alphabet
+    * @param to address of the owner of the sub-lands
+    */
     function _batchMint(string memory origin, address to) internal {
         for (uint8 i = 0; i < 32; i++) {
             uint256 newId = uint256(
@@ -119,39 +117,39 @@ contract Geohash is
     }
 
     /**
-     * @notice Renounce the ownership of the token
-     * @param tokenId tokenId you want to renounce
-     */
+    * @notice Renounce the ownership of the token
+    * @param tokenId tokenId you want to renounce
+    */
     function renounce(uint256 tokenId) external {
         safeTransferFrom(_msgSender(), address(this), tokenId);
     }
 
     /**
-     * @notice Renounce the ownership of the token
-     * @param tokenURI_ tokenURI you want to renounce
-     */
+    * @notice Renounce the ownership of the token
+    * @param tokenURI_ tokenURI you want to renounce
+    */
     function renounceByURI(string memory tokenURI_) external {
         (uint256 tokenId, ) = _tokenByURI(tokenURI_);
         safeTransferFrom(_msgSender(), address(this), tokenId);
     }
 
     /**
-     * @notice Claim a token from No Man's Land
-     * @param tokenId tokenId you want to claim
-     */
+    * @notice Claim a token from No Man's Land
+    * @param tokenId tokenId you want to claim
+    */
     function claim(uint256 tokenId) external {
-        require(_exists(tokenId), "Geohash: tokenURI does not exist");
-        _transfer(address(this), _msgSender(), tokenId);
+        require(_exists(tokenId), "Geohash: tokenId does not exist");
+        _safeTransfer(address(this), _msgSender(), tokenId, "");
     }
 
     /**
-     * @notice Claim a token from No Man's Land
-     * @param tokenURI_ tokenURI you want to claim
-     */
+    * @notice Claim a token from No Man's Land
+    * @param tokenURI_ tokenURI you want to claim
+    */
     function claimByURI(string memory tokenURI_) external {
         (uint256 tokenId, bool exist) = _tokenByURI(tokenURI_);
         require(exist, "Geohash: tokenURI does not exist");
-        _transfer(address(this), _msgSender(), tokenId);
+        _safeTransfer(address(this), _msgSender(), tokenId);
     }
 
     // The following functions are overrides required by Solidity.
