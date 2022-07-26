@@ -38,15 +38,15 @@ contract Geohash is
 
     /**
      * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
-     * @param tokenId_ tokenId of land which you want to divide
+     * @param tokenId tokenId of land which you want to divide
      */
-    function divide(uint256 tokenId_) external {
+    function divide(uint256 tokenId) external {
         require(
-            _isApprovedOrOwner(_msgSender(), tokenId_),
+            _isApprovedOrOwner(_msgSender(), tokenId),
             "Geohash: transfer caller is not owner nor approved"
         );
-        string memory parentURI_ = tokenURI(tokenId_);
-        _burn(tokenId_);
+        string memory parentURI_ = tokenURI(tokenId);
+        _burn(tokenId);
         _batchMint(parentURI_, _msgSender());
     }
 
@@ -55,13 +55,13 @@ contract Geohash is
      * @param tokenURI_ tokenId of land which you want to divide
      */
     function divideByURI(string memory tokenURI_) external {
-        uint256 tokenId_ = uint256(keccak256(abi.encodePacked(tokenURI_)));
+        uint256 tokenId = uint256(keccak256(abi.encodePacked(tokenURI_)));
         require(
-            _isApprovedOrOwner(_msgSender(), tokenId_),
+            _isApprovedOrOwner(_msgSender(), tokenId),
             "Geohash: transfer caller is not owner nor approved"
         );
-        string memory parentURI_ = tokenURI(tokenId_);
-        _burn(tokenId_);
+        string memory parentURI_ = tokenURI(tokenId);
+        _burn(tokenId);
         _batchMint(parentURI_, _msgSender());
     }
 
@@ -69,31 +69,31 @@ contract Geohash is
      * @notice Query tokenId by tokenURI
      * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
      * @param tokenURI_ tokenURI you want to query
-     * @return tokenId_ the query token's id which is not necessarily 100% valid
-     * @return exist_ if the query token is exist, return true
+     * @return tokenId the query token's id which is not necessarily 100% valid
+     * @return exist if the query token is exist, return true
      */
     function tokenByURI(string memory tokenURI_)
         external
         view
-        returns (uint256 tokenId_, bool exist_)
+        returns (uint256 tokenId, bool exist)
     {
-        (tokenId_, exist_) = _tokenByURI(tokenURI_);
+        (tokenId, exist) = _tokenByURI(tokenURI_);
     }
 
     /**
      * @notice Query tokenId by tokenURI
      * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
      * @param tokenURI_ tokenURI you want to query
-     * @return tokenId_ the query token's id which is not necessarily 100% valid
-     * @return exist_ if the query token is exist, return true
+     * @return tokenId the query token's id which is not necessarily 100% valid
+     * @return exist if the query token is exist, return true
      */
     function _tokenByURI(string memory tokenURI_)
         internal
         view
-        returns (uint256 tokenId_, bool exist_)
+        returns (uint256 tokenId, bool exist)
     {
-        tokenId_ = uint256(keccak256(abi.encodePacked(tokenURI_)));
-        exist_ = _exists(tokenId_);
+        tokenId = uint256(keccak256(abi.encodePacked(tokenURI_)));
+        exist = _exists(tokenId);
     }
 
     /**
@@ -113,12 +113,17 @@ contract Geohash is
         }
     }
 
+    // TODO add a function to query tokenURI by tokenId
+    function tokenURI(uint256 tokenId) external view returns (string memory) {
+        return _tokenURI(tokenId);
+    }
+
     /**
      * @notice Renounce the ownership of the token
-     * @param tokenId_ tokenId you want to renounce
+     * @param tokenId tokenId you want to renounce
      */
-    function renounce(uint256 tokenId_) external {
-        safeTransferFrom(_msgSender(), address(this), tokenId_);
+    function renounce(uint256 tokenId) external {
+        safeTransferFrom(_msgSender(), address(this), tokenId);
     }
 
     /**
@@ -126,17 +131,17 @@ contract Geohash is
      * @param tokenURI_ tokenURI you want to renounce
      */
     function renounceByURI(string memory tokenURI_) external {
-        (uint256 tokenId_, ) = _tokenByURI(tokenURI_);
-        safeTransferFrom(_msgSender(), address(this), tokenId_);
+        (uint256 tokenId, ) = _tokenByURI(tokenURI_);
+        safeTransferFrom(_msgSender(), address(this), tokenId);
     }
 
     /**
      * @notice Claim a token from No Man's Land
-     * @param tokenId_ tokenId you want to claim
+     * @param tokenId tokenId you want to claim
      */
-    function claim(uint256 tokenId_) external {
-        require(_exists(tokenId_), "Geohash: tokenURI does not exist");
-        _transfer(address(this), _msgSender(), tokenId_);
+    function claim(uint256 tokenId) external {
+        require(_exists(tokenId), "Geohash: tokenURI does not exist");
+        _transfer(address(this), _msgSender(), tokenId);
     }
 
     /**
@@ -144,9 +149,9 @@ contract Geohash is
      * @param tokenURI_ tokenURI you want to claim
      */
     function claimByURI(string memory tokenURI_) external {
-        (uint256 tokenId_, bool exist_) = _tokenByURI(tokenURI_);
-        require(exist_, "Geohash: tokenURI does not exist");
-        _transfer(address(this), _msgSender(), tokenId_);
+        (uint256 tokenId, bool exist) = _tokenByURI(tokenURI_);
+        require(exist, "Geohash: tokenURI does not exist");
+        _transfer(address(this), _msgSender(), tokenId);
     }
 
     // The following functions are overrides required by Solidity.
@@ -154,25 +159,25 @@ contract Geohash is
     function _beforeTokenTransfer(
         address from_,
         address to_,
-        uint256 tokenId_
+        uint256 tokenId
     ) internal override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(from_, to_, tokenId_);
+        super._beforeTokenTransfer(from_, to_, tokenId);
     }
 
-    function _burn(uint256 tokenId_)
+    function _burn(uint256 tokenId)
         internal
         override(ERC721, ERC721URIStorage)
     {
-        super._burn(tokenId_);
+        super._burn(tokenId);
     }
 
-    function tokenURI(uint256 tokenId_)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
+    function _tokenURI(uint256 tokenId)
+    internal
+    view
+    override(ERC721, ERC721URIStorage)
+    returns (string memory)
     {
-        return super.tokenURI(tokenId_);
+        return super.tokenURI(tokenId);
     }
 
     function supportsInterface(bytes4 interfaceId)
