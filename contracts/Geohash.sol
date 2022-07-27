@@ -5,10 +5,10 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "./interfaces/IGeohash.sol";
+import "./lib/base64.sol";
 
 /**
  * @title Geohash
@@ -18,13 +18,17 @@ import "./interfaces/IGeohash.sol";
 contract Geohash is
 ERC721,
 ERC721Enumerable,
-ERC721URIStorage,
 IGeohash,
 IERC721Receiver
 {
     using Counters for Counters.Counter;
 
+    using Strings for uint256;
+
     Counters.Counter private _tokenIdCounter;
+
+    // Optional mapping for token URIs
+    mapping(uint256 => string) private _tokenURIs;
 
     // The alphabet(32ghs) uses all digits 0-9 and almost all lower case letters except "a", "i", "l" and "o"
     // https://en.wikipedia.org/wiki/Geohash
@@ -89,7 +93,7 @@ IERC721Receiver
             _isApprovedOrOwner(_msgSender(), tokenId),
             "Geohash: transfer caller is not owner nor approved"
         );
-        string memory parentURI_ = _tokenURI(tokenId);
+        string memory parentURI_ = _tokenURIs[tokenId];
         _burn(tokenId);
         _batchMint(parentURI_, _msgSender());
     }
@@ -112,21 +116,17 @@ IERC721Receiver
     }
 
     // TODO add a function to query tokenURI by tokenId
-    function tokenURI(uint256 tokenId) external view returns (string memory) {
-        string[11] memory parts;
-        parts[0] = '<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg" fill="none"><g>';
-        parts[1] = '<rect id="svg_1" stroke-width="2" stroke="#222222" fill="white" rx="23" height="398" width="633" y="101.71429" x="84"/>';
-        parts[2] = '<path id="svg_2" fill="#222222" d="m218.192,163.612l0,33.942l-5.691,0l0,-6.158c-1.374,2.473 -3.127,4.359 -5.262,5.657c-2.134,1.298 -4.524,1.947 -7.17,1.947c-4.918,0 -8.881,-1.676 -11.889,-5.027c-3.009,-3.351 -4.513,-7.783 -4.513,-13.297c0,-5.589 1.461,-10.034 4.382,-13.336c2.921,-3.302 6.828,-4.952 11.721,-4.952c2.87,0 5.361,0.636 7.471,1.91c2.11,1.273 3.814,3.171 5.111,5.694l0,-6.38l5.84,0zm-5.691,17.286c0,-3.833 -1.056,-6.918 -3.169,-9.255c-2.112,-2.337 -4.864,-3.506 -8.257,-3.505c-3.519,0 -6.266,1.075 -8.238,3.227c-1.973,2.152 -2.956,5.156 -2.951,9.013c0,4.106 0.992,7.272 2.977,9.497c1.985,2.226 4.799,3.339 8.442,3.34c3.495,0 6.235,-1.082 8.22,-3.246c1.984,-2.163 2.976,-5.187 2.977,-9.071l-0.001,0z"/>';
-        parts[3] = '<path id="svg_3" fill="#222222" d="m221.164,198.903l0,-57.496l5.88,0l0,38.949l16.514,-15.394l7.826,0l-17.114,15.543l18.65,18.398l-8.202,0l-17.674,-17.916l0,17.916l-5.88,0z"/>';
-        parts[4] = '<path id="svg_4" fill="#222222" d="m281.741,163.564l0,33.941l-5.692,0l0,-6.158c-1.373,2.474 -3.127,4.359 -5.261,5.657c-2.134,1.299 -4.525,1.948 -7.171,1.948c-4.919,0 -8.882,-1.676 -11.89,-5.026c-3.007,-3.351 -4.511,-7.784 -4.513,-13.299c0,-5.589 1.461,-10.034 4.382,-13.335c2.921,-3.301 6.828,-4.952 11.721,-4.952c2.871,0 5.361,0.637 7.471,1.91c2.11,1.274 3.813,3.172 5.111,5.694l0,-6.38l5.842,0zm-5.692,17.286c0,-3.833 -1.055,-6.918 -3.165,-9.255c-2.11,-2.337 -4.862,-3.505 -8.257,-3.506c-3.519,0 -6.265,1.076 -8.238,3.228c-1.973,2.152 -2.959,5.156 -2.958,9.014c0,4.105 0.993,7.27 2.977,9.496c1.984,2.225 4.799,3.338 8.444,3.338c3.495,0 6.235,-1.082 8.22,-3.246c1.984,-2.164 2.977,-5.187 2.977,-9.069z"/>';
-        parts[5] = '<path id="svg_6" fill="#222222" d="m352.138,140l0,57.496l-5.691,0l0,-6.158c-1.349,2.448 -3.096,4.328 -5.243,5.639c-2.146,1.311 -4.543,1.968 -7.19,1.968c-4.918,0 -8.881,-1.675 -11.889,-5.026c-3.008,-3.351 -4.512,-7.784 -4.513,-13.298c0,-5.564 1.473,-10.003 4.419,-13.316c2.947,-3.314 6.866,-4.971 11.759,-4.972c2.847,0 5.318,0.637 7.414,1.91c2.096,1.274 3.793,3.171 5.09,5.692l0,-29.935l5.844,0zm-5.691,40.692c0,-3.783 -1.061,-6.83 -3.184,-9.142c-2.122,-2.311 -4.918,-3.468 -8.388,-3.47c-3.47,0 -6.179,1.051 -8.127,3.154c-1.947,2.102 -2.92,5.007 -2.92,8.717c0,4.179 0.987,7.449 2.962,9.811c1.974,2.361 4.695,3.542 8.163,3.542c3.595,0 6.41,-1.113 8.445,-3.338c2.034,-2.226 3.05,-5.317 3.049,-9.274z"/>';
-        parts[6] = '<path id="svg_7" fill="#222222" d="m389,163.537l0,33.942l-5.692,0l0,-6.157c-1.373,2.473 -3.127,4.359 -5.261,5.657c-2.134,1.298 -4.524,1.947 -7.171,1.947c-4.918,0 -8.881,-1.675 -11.889,-5.026c-3.008,-3.35 -4.512,-7.783 -4.513,-13.298c0,-5.589 1.461,-10.034 4.381,-13.335c2.921,-3.301 6.828,-4.952 11.721,-4.952c2.871,0 5.361,0.636 7.471,1.91c2.111,1.273 3.814,3.171 5.111,5.694l0,-6.382l5.842,0zm-5.692,17.288c0,-3.833 -1.054,-6.918 -3.164,-9.255c-2.11,-2.337 -4.862,-3.506 -8.257,-3.506c-3.52,0 -6.266,1.076 -8.238,3.228c-1.972,2.151 -2.959,5.156 -2.962,9.013c0.001,4.104 0.995,7.27 2.98,9.498c1.986,2.229 4.801,3.342 8.445,3.339c3.494,0 6.234,-1.082 8.219,-3.246c1.985,-2.164 2.977,-5.188 2.977,-9.071z"/>';
-        parts[7] = ' <path id="svg_8" fill="#222222" d="m188.09,147.657l-12.572,32.532l-13.864,-32.532l-0.038,0.015l-0.006,-0.015l-9.676,0l7.83,19.125l-5.18,13.407l-13.865,-32.532l-0.038,0.015l-0.006,-0.015l-9.675,0l20.841,50.905l3.175,-8.211l6.991,-18.091l10.768,26.302l3.175,-8.211l16.498,-42.694l-4.358,0z"/>';
-        parts[8] = '<text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" id="svg_9" y="368" x="124" stroke-width="0" stroke="#000" fill="#222222">#';
-        parts[9] = _tokenURI(tokenId);
-        parts[10] = '</text></g></svg>';
-        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9], parts[10]));
-        string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "', _name, ' #', _tokenURI(tokenId), '", "description": "Welcome to Wakanda Metaverse!", "image": "data:image/svg+xml;base64,', Base64.encode(bytes(output)), '"}'))));
+    function tokenURI(uint256 tokenId)
+    public
+    override
+    view returns (string memory) {
+        string memory tokenURI_ = _tokenURIs[tokenId];
+        string[3] memory parts;
+        parts[0] = '<svg width="700" height="700" xmlns="http://www.w3.org/2000/svg" fill="none"><g><rect id="svg_1" fill="white" rx="24" height="400" width="635" y="151" x="33"/> <path id="svg_2" fill="#222222" d="m140.113,206.008l0,23.011l-3.858,0l0,-4.174c-0.931,1.676 -2.12,2.955 -3.567,3.835c-1.447,0.88 -3.068,1.32 -4.861,1.32c-3.335,0 -6.022,-1.136 -8.061,-3.408c-2.04,-2.272 -3.059,-5.277 -3.059,-9.015c0,-3.789 0.99,-6.803 2.97,-9.041c1.981,-2.239 4.629,-3.358 7.946,-3.358c1.947,0 3.635,0.432 5.066,1.295c1.43,0.864 2.585,2.15 3.465,3.86l0,-4.325l3.959,0zm-3.858,11.72c0,-2.599 -0.716,-4.691 -2.148,-6.275c-1.432,-1.585 -3.298,-2.377 -5.598,-2.377c-2.387,0 -4.248,0.73 -5.586,2.189c-1.337,1.458 -2.004,3.495 -2,6.11c0,2.784 0.672,4.93 2.018,6.439c1.346,1.508 3.253,2.263 5.723,2.264c2.37,0 4.228,-0.734 5.573,-2.201c1.345,-1.466 2.018,-3.516 2.019,-6.149l-0.001,0z"/> <path id="svg_3" fill="#222222" d="m142.128,229.934l0,-38.98l3.986,0l0,26.406l11.196,-10.437l5.306,0l-11.602,10.538l12.643,12.473l-5.56,0l-11.983,-12.146l0,12.146l-3.986,0z"/> <path id="svg_4" fill="#222222" d="m183.197,205.975l0,23.012l-3.859,0l0,-4.175c-0.931,1.677 -2.12,2.955 -3.567,3.835c-1.447,0.88 -3.067,1.32 -4.861,1.32c-3.335,0 -6.022,-1.136 -8.061,-3.407c-2.039,-2.272 -3.059,-5.277 -3.06,-9.016c0,-3.789 0.99,-6.803 2.971,-9.041c1.98,-2.238 4.629,-3.357 7.947,-3.357c1.946,0 3.634,0.431 5.064,1.295c1.431,0.863 2.586,2.15 3.466,3.86l0,-4.326l3.96,0zm-3.859,11.72c0,-2.599 -0.715,-4.69 -2.145,-6.275c-1.431,-1.584 -3.297,-2.376 -5.598,-2.377c-2.386,0 -4.248,0.73 -5.586,2.189c-1.337,1.459 -2.006,3.496 -2.005,6.111c0,2.783 0.673,4.929 2.018,6.438c1.346,1.509 3.254,2.263 5.725,2.263c2.37,0 4.227,-0.733 5.573,-2.2c1.345,-1.468 2.018,-3.517 2.018,-6.149z"/> <path id="svg_5" fill="#222222" d="m184.995,228.978l0,-23.011l3.884,0l0,3.546c0.999,-1.475 2.201,-2.573 3.605,-3.294c1.405,-0.721 3.03,-1.082 4.875,-1.082c2.742,0 4.883,0.721 6.423,2.163c1.54,1.442 2.31,3.446 2.309,6.012l0,15.666l-4.063,0l0,-13.555c0,-2.33 -0.495,-4.061 -1.485,-5.193c-0.989,-1.132 -2.517,-1.698 -4.582,-1.698c-1.185,0 -2.264,0.214 -3.237,0.642c-0.944,0.406 -1.775,1.033 -2.423,1.825c-0.493,0.607 -0.852,1.31 -1.054,2.062c-0.212,0.771 -0.317,2.113 -0.317,4.025l0,11.892l-3.935,0z"/> <path id="svg_6" fill="#222222" d="m230.924,190l0,38.981l-3.859,0l0,-4.175c-0.914,1.659 -2.099,2.934 -3.554,3.823c-1.455,0.889 -3.08,1.333 -4.875,1.334c-3.334,0 -6.02,-1.136 -8.06,-3.408c-2.039,-2.272 -3.059,-5.277 -3.059,-9.015c0,-3.773 0.998,-6.782 2.996,-9.028c1.997,-2.247 4.655,-3.37 7.972,-3.371c1.93,0 3.605,0.432 5.026,1.295c1.421,0.864 2.572,2.15 3.451,3.859l0,-20.295l3.962,0zm-3.859,27.588c0,-2.565 -0.719,-4.631 -2.158,-6.198c-1.438,-1.567 -3.334,-2.351 -5.686,-2.353c-2.353,0 -4.19,0.713 -5.51,2.138c-1.32,1.426 -1.98,3.395 -1.98,5.91c0,2.834 0.669,5.051 2.008,6.652c1.338,1.601 3.183,2.401 5.534,2.401c2.438,0 4.346,-0.754 5.725,-2.263c1.38,-1.509 2.069,-3.604 2.067,-6.287z"/> <path id="svg_7" fill="#222222" d="m255.915,205.957l0,23.012l-3.859,0l0,-4.174c-0.931,1.676 -2.12,2.955 -3.566,3.835c-1.447,0.88 -3.068,1.32 -4.863,1.32c-3.334,0 -6.02,-1.136 -8.06,-3.407c-2.039,-2.272 -3.059,-5.277 -3.059,-9.016c0,-3.789 0.99,-6.803 2.97,-9.041c1.98,-2.238 4.629,-3.357 7.946,-3.357c1.947,0 3.635,0.431 5.066,1.295c1.43,0.863 2.585,2.15 3.465,3.86l0,-4.327l3.96,0zm-3.859,11.721c0,-2.599 -0.715,-4.69 -2.145,-6.275c-1.43,-1.584 -3.296,-2.376 -5.598,-2.377c-2.386,0 -4.248,0.73 -5.585,2.189c-1.337,1.458 -2.006,3.495 -2.008,6.111c0.001,2.782 0.674,4.928 2.021,6.439c1.346,1.511 3.254,2.266 5.725,2.264c2.369,0 4.226,-0.734 5.572,-2.201c1.346,-1.467 2.018,-3.517 2.018,-6.15z"/> <path id="svg_8" fill="#222222" d="m119.705,195.191l-8.523,22.056l-9.399,-22.056l-0.027,0.011l-0.004,-0.011l-6.5592,0l5.3082,12.966l-3.5119,9.09l-9.3998,-22.056l-0.0261,0.011l-0.0038,-0.011l-6.5594,0l14.1293,34.512l2.1525,-5.567l4.7402,-12.265l7.3,17.832l2.153,-5.567l11.185,-28.945l-2.955,0z"/> <text xml:space="preserve" text-anchor="start" font-family="Noto Sans JP" font-size="24" stroke-width="0" id="svg_9" y="420" x="75" fill="#000000">#';
+        parts[1] = tokenURI_;
+        parts[2] = '</text></g></svg>';
+        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2]));
+        string memory json = Base64.encode(string(abi.encodePacked('{"name": "', name(), ' #', tokenURI_, '", "description": "Welcome to Wakanda Metaverse!", "image": "data:image/svg+xml;base64,', Base64.encode(output), '", "attributes": [{"display_type": "number", "trait_type": "length", "value": ', bytes(tokenURI_).length, '}], "background_color": E5E5E5}')));
         output = string(abi.encodePacked('data:application/json;base64,', json));
         return output;
     }
@@ -164,7 +164,7 @@ IERC721Receiver
     function claimByURI(string memory tokenURI_) external {
         (uint256 tokenId, bool exist) = _tokenByURI(tokenURI_);
         require(exist, "Geohash: tokenURI does not exist");
-        _safeTransfer(address(this), _msgSender(), tokenId);
+        _safeTransfer(address(this), _msgSender(), tokenId, '');
     }
 
     // The following functions are overrides required by Solidity.
@@ -179,18 +179,13 @@ IERC721Receiver
 
     function _burn(uint256 tokenId)
     internal
-    override(ERC721, ERC721URIStorage)
+    override(ERC721)
     {
         super._burn(tokenId);
-    }
 
-    function _tokenURI(uint256 tokenId)
-    internal
-    view
-    override(ERC721, ERC721URIStorage)
-    returns (string memory)
-    {
-        return super.tokenURI(tokenId);
+        if (bytes(_tokenURIs[tokenId]).length != 0) {
+            delete _tokenURIs[tokenId];
+        }
     }
 
     function supportsInterface(bytes4 interfaceId)
@@ -209,5 +204,17 @@ IERC721Receiver
         bytes calldata data
     ) external pure returns (bytes4) {
         return this.onERC721Received.selector;
+    }
+
+    /**
+     * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {
+        require(_exists(tokenId), "Geohash: URI set of nonexistent token");
+        _tokenURIs[tokenId] = _tokenURI;
     }
 }
