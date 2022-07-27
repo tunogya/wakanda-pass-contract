@@ -12,7 +12,7 @@ library Base64 {
         uint j = 0;
 
         uint padlen = bytes(_str).length;
-        // Lenght of the input string "padded" to next multiple of 3
+        // Length of the input string "padded" to next multiple of 3
         if (padlen % 3 != 0) padlen += (3 - (padlen % 3));
 
         bytes memory _bs = bytes(_str);
