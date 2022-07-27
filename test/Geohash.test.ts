@@ -59,4 +59,12 @@ describe("TestGeohash", function () {
       expect(await geohash.balanceOf(Alice.address)).to.equal(2);
     });
   });
+
+  describe("tokenURI()", () => {
+    it("should return tokenURI", async () => {
+      const tokenId0 = await geohash.tokenByIndex(0);
+      // const tokenURI = await geohash.tokenURI(tokenId0);
+      console.log(tokenId0);
+    });
+  });
 });
