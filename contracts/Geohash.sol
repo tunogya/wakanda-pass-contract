@@ -126,7 +126,7 @@ IERC721Receiver
         parts[9] = _tokenURI(tokenId);
         parts[10] = '</text></g></svg>';
         string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9], parts[10]));
-        string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "', _name, ' #', _tokenURI(tokenId), '", "description": "Geohash", "image": "data:image/svg+xml;base64,', Base64.encode(bytes(output)), '"}'))));
+        string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "', _name, ' #', _tokenURI(tokenId), '", "description": "Welcome to Wakanda Metaverse!", "image": "data:image/svg+xml;base64,', Base64.encode(bytes(output)), '"}'))));
         output = string(abi.encodePacked('data:application/json;base64,', json));
         return output;
     }
