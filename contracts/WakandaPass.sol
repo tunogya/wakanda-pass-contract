@@ -152,7 +152,7 @@ IERC721Receiver
                             '"}, {"trait_type": "Level", "value": ',
                             Strings.toString(bytes(tokenURI_).length),
                             '}], "background_color": "',
-                            string(abi.encodePacked(bytes(color)[2], bytes(color)[3], bytes(color)[4], bytes(color)[5], bytes(color)[6])),
+                            string(abi.encodePacked(bytes(color)[2], bytes(color)[3], bytes(color)[4], bytes(color)[5], bytes(color)[6], bytes(color)[7])),
                             '"}'
                         )
                     )
