@@ -172,7 +172,7 @@ IERC721Receiver
      * @param geohash geohash you want to renounce
      */
     function renounceByGeohash(string memory geohash) external {
-        (uint256 tokenId,) = _tokenByGeohash(tokenURI_);
+        (uint256 tokenId,) = _tokenByGeohash(geohash);
         safeTransferFrom(_msgSender(), address(this), tokenId);
     }
 

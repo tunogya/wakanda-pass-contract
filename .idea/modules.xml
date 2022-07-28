@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/geohash.iml" filepath="$PROJECT_DIR$/.idea/geohash.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/wakanda-pass.iml" filepath="$PROJECT_DIR$/.idea/wakanda-pass.iml" />
     </modules>
   </component>
 </project>
