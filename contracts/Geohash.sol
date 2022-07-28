@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "base64-sol/base64.sol";
 
 import "./interfaces/IGeohash.sol";
@@ -144,7 +145,11 @@ IERC721Receiver
                                     )
                                 )
                             ),
-                            '", "background_color": "E5E5E5"}'
+                            '", "attributes": [{"trait_type": "geohash", "value": "',
+                            tokenURI_,
+                            '"}, {"display_type": "number", "trait_type": "Length", "value": ',
+                            Strings.toString(bytes(tokenURI_).length),
+                            '}], "background_color": "E5E5E5"}'
                         )
                     )
                 )
