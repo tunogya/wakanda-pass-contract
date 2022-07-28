@@ -11,17 +11,17 @@ interface IWakandaPass {
 
     /**
      * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
-     * @param tokenURI_ tokenURI of land which you want to divide
+     * @param geohash geohash of land which you want to divide
      */
-    function divideByURI(string memory tokenURI_) external;
+    function divideByGeohash(string memory geohash) external;
 
     /**
-     * @notice Query tokenId by tokenURI
-     * @param tokenURI_ tokenURI you want to query
+     * @notice Query tokenId by geohash
+     * @param geohash geohash you want to query
      * @return tokenId the query token's id which is not necessarily 100% valid
      * @return exist if the query token is exist, return true
      */
-    function tokenByURI(string memory tokenURI_)
+    function tokenByGeohash(string memory geohash)
         external
         view
         returns (uint256 tokenId, bool exist);
@@ -34,9 +34,9 @@ interface IWakandaPass {
 
     /**
      * @notice Renounce the ownership of the token
-     * @param tokenURI_ tokenURI you want to renounce
+     * @param geohash geohash you want to renounce
      */
-    function renounceByURI(string memory tokenURI_) external;
+    function renounceByGeohash(string memory geohash) external;
 
     /**
      * @notice Claim a token from No Man's Land
@@ -46,7 +46,7 @@ interface IWakandaPass {
 
     /**
      * @notice Claim a token from No Man's Land
-     * @param tokenURI_ tokenURI you want to claim
+     * @param geohash geohash you want to claim
      */
-    function claimByURI(string memory tokenURI_) external;
+    function claimByGeohash(string memory geohash) external;
 }
