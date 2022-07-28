@@ -148,7 +148,7 @@ IERC721Receiver
                             ),
                             '", "attributes": [{"trait_type": "Geohash", "value": "',
                             tokenURI_,
-                            '"}, {"trait_type": "Length", "value": ',
+                            '"}, {"trait_type": "Level", "value": ',
                             Strings.toString(bytes(tokenURI_).length),
                             '}], "background_color": "E5E5E5"}'
                         )
