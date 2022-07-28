@@ -124,7 +124,7 @@ IERC721Receiver
     view returns (string memory) {
         require(_exists(tokenId), "WakandaPass: tokenId does not exist");
         string memory tokenURI_ = _tokenGeohashes[tokenId];
-        string memory color = Strings.toHexString(tokenId, 24);
+        string memory color = Strings.toHexString(tokenId >> 232);
         string memory output = string(
             abi.encodePacked(
                 'data:application/json;base64,',
