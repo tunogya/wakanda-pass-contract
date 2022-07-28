@@ -15,15 +15,13 @@ async function main() {
   const signers: SignerWithAddress[] = await ethers.getSigners();
   dim(`signer: ${signers[0].address}`);
   const GeoHash: ContractFactory = await ethers.getContractFactory("Geohash");
-  const geohash = await GeoHash.deploy("WakandaPass", "PASS");
+  const geohash = await GeoHash.deploy("WakandaPass", "WP");
   await geohash.deployed();
   // const geohash = await Geohash.attach(
   //   ""
   // );
   green(`Geohash deployed to: ${geohash.address}`);
-  dim(
-    `hh verify --network ${network.name} ${geohash.address} WakandaPass PASS`
-  );
+  dim(`hh verify --network ${network.name} ${geohash.address} WakandaPass WP`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
