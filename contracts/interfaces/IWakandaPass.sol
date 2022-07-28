@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.9;
 
-interface IGeohash {
+interface IWakandaPass {
     /**
      * @notice This will burn your original land and mint 32 sub-lands, all of which are yours
      * @param tokenId tokenId of land which you want to divide

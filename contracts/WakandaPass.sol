@@ -9,17 +9,17 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "base64-sol/base64.sol";
 
-import "./interfaces/IGeohash.sol";
+import "./interfaces/IWakandaPass.sol";
 
 /**
- * @title Geohash
- * @dev Geohash use geohash algorithm. Each NFT can be cut into smaller pieces
+ * @title WakandaPass
+ * @dev WakandaPass use geohash algorithm. Each NFT can be cut into smaller pieces
  * @author Wakanda Labs
  */
-contract Geohash is
+contract WakandaPass is
 ERC721,
 ERC721Enumerable,
-IGeohash,
+IWakandaPass,
 IERC721Receiver
 {
     using Counters for Counters.Counter;
@@ -32,7 +32,7 @@ IERC721Receiver
     mapping(uint256 => string) private _tokenURIs;
 
     // The alphabet(32ghs) uses all digits 0-9 and almost all lower case letters except "a", "i", "l" and "o"
-    // https://en.wikipedia.org/wiki/Geohash
+    // https://en.wikipedia.org/wiki/WakandaPass
     bytes32 private constant ALPHABET = "0123456789bcdefghjkmnpqrstuvwxyz";
 
     constructor(string memory name_, string memory symbol_)
@@ -60,7 +60,7 @@ IERC721Receiver
 
     /**
      * @notice Query tokenId by tokenURI
-     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
+     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every WakandaPass is unique
      * @param tokenURI_ tokenURI you want to query
      * @return tokenId the query token's id which is not necessarily 100% valid
      * @return exist if the query token is exist, return true
@@ -75,7 +75,7 @@ IERC721Receiver
 
     /**
      * @notice Query tokenId by tokenURI
-     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
+     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every WakandaPass is unique
      * @param tokenURI_ tokenURI you want to query
      * @return tokenId the query token's id which is not necessarily 100% valid
      * @return exist if the query token is exist, return true
@@ -92,7 +92,7 @@ IERC721Receiver
     function _divide(uint256 tokenId) internal {
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
-            "Geohash: transfer caller is not owner nor approved"
+            "WakandaPass: transfer caller is not owner nor approved"
         );
         string memory parentURI_ = _tokenURIs[tokenId];
         _burn(tokenId);
@@ -101,7 +101,7 @@ IERC721Receiver
 
     /**
      * @notice Batch mint by origin
-     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every geohash is unique
+     * @dev abi.encodePacked will have many-to-one parameters and encodings, but every WakandaPass is unique
      * @param origin all URI was build by alphabet
      * @param to address of the owner of the sub-lands
      */
@@ -121,7 +121,7 @@ IERC721Receiver
     public
     override
     view returns (string memory) {
-        require(_exists(tokenId), "Geohash: tokenId does not exist");
+        require(_exists(tokenId), "WakandaPass: tokenId does not exist");
         string memory tokenURI_ = _tokenURIs[tokenId];
         string memory output = string(
             abi.encodePacked(
@@ -145,7 +145,7 @@ IERC721Receiver
                                     )
                                 )
                             ),
-                            '", "attributes": [{"trait_type": "Geohash", "value": "',
+                            '", "attributes": [{"trait_type": "WakandaPass", "value": "',
                             tokenURI_,
                             '"}, {"display_type": "number", "trait_type": "Length", "value": ',
                             Strings.toString(bytes(tokenURI_).length),
@@ -180,7 +180,7 @@ IERC721Receiver
      * @param tokenId tokenId you want to claim
      */
     function claim(uint256 tokenId) external {
-        require(_exists(tokenId), "Geohash: tokenId does not exist");
+        require(_exists(tokenId), "WakandaPass: tokenId does not exist");
         _safeTransfer(address(this), _msgSender(), tokenId, "");
     }
 
@@ -190,7 +190,7 @@ IERC721Receiver
      */
     function claimByURI(string memory tokenURI_) external {
         (uint256 tokenId, bool exist) = _tokenByURI(tokenURI_);
-        require(exist, "Geohash: tokenURI does not exist");
+        require(exist, "WakandaPass: tokenURI does not exist");
         _safeTransfer(address(this), _msgSender(), tokenId, '');
     }
 
@@ -241,7 +241,7 @@ IERC721Receiver
      * - `tokenId` must exist.
      */
     function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {
-        require(_exists(tokenId), "Geohash: URI set of nonexistent token");
+        require(_exists(tokenId), "WakandaPass: URI set of nonexistent token");
         _tokenURIs[tokenId] = _tokenURI;
     }
 }
