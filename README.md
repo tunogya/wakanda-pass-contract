@@ -26,9 +26,9 @@ We aim to give everyone in the world an opportunity to become a member.
 
 ## deployment
 
-| network | contract    | contract address |
-|---------|-------------|------------------|
-| goerli  | WakandaPass |                  |
+| network | contract    | contract address                           |
+|---------|-------------|--------------------------------------------|
+| polygon | WakandaPass | 0x9c824c1dc64cdfcfe27c91faafc991c013bdaa74 |
 
 ## discord
 
