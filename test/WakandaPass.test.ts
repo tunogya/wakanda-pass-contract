@@ -39,9 +39,9 @@ describe("TestWakandaPass", function () {
     });
   });
 
-  describe("tokenByURI()", () => {
+  describe("tokenByGeohash()", () => {
     it("tokenURI to tokenId", async () => {
-      const [tokenId, exists] = await wakandapass.tokenByURI("0");
+      const [tokenId, exists] = await wakandapass.tokenByGeohash("0");
       await expect(tokenId.toString()).to.equal(
         "1937035142596246788172577232054709726386880441279550832067530347910661804397"
       );
@@ -55,7 +55,7 @@ describe("TestWakandaPass", function () {
       const tokenId0 = await wakandapass.tokenByIndex(0);
       await AliceWP.claim(tokenId0);
       expect(await wakandapass.balanceOf(Alice.address)).to.equal(1);
-      await AliceWP.claimByURI("1");
+      await AliceWP.claimByGeohash("1");
       expect(await wakandapass.balanceOf(Alice.address)).to.equal(2);
     });
   });
@@ -63,8 +63,8 @@ describe("TestWakandaPass", function () {
   describe("tokenURI()", () => {
     it("should return tokenURI", async () => {
       const tokenId0 = await wakandapass.tokenByIndex(0);
-      // const tokenURI = await wakandapass.tokenURI(tokenId0);
-      console.log(tokenId0);
+      const tokenURI = await wakandapass.tokenURI(tokenId0);
+      console.log(tokenURI);
     });
   });
 });
