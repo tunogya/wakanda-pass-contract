@@ -32,4 +32,4 @@ We aim to give everyone in the world an opportunity to become a member.
 
 ## discord
 
-Wakanda+: https://discord.gg/hddy3D2ufY
+Wakanda+: https://discord.com/invite/hzvXbjtzgj
